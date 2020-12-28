@@ -1,5 +1,6 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { OrbitControls } from './../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import * as MC from './model_constructor.js';
 
 let camera, scene, renderer, controls,
  mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
@@ -17,8 +18,8 @@ let camera, scene, renderer, controls,
     function init() {
 
         escala = 5 //Tamaño del radio terrestre (referencia para todos demás cuerpos celestes)
-        const factorProporcion = 1
-        UA = 23454.8 * escala * factorProporcion//Unidad astronómica (distancia media entre la tiera y el sol)
+        
+        UA = 23454.8 * escala //Unidad astronómica (distancia media entre la tiera y el sol)
         
         // Init scene
 	    scene = new THREE.Scene();
@@ -32,21 +33,20 @@ let camera, scene, renderer, controls,
 		0.1,
 		60000*UA
         );
+        camera.position.set(0,UA,10 * UA);
         
         //LUCES
         const light = new THREE.PointLight( {color:0xFFFFFF, decay: 2, intensity: 1} );
         light.position.set( 0, 0, 0 );
-        scene.add( light );
         light.castShadow = true;
         //Set up shadow properties for the light
         light.shadow.mapSize.width = 5;  // default
         light.shadow.mapSize.height = 5; // default
         light.shadow.camera.near = 0.5;       // default
         light.shadow.camera.far = UA      // default
+        scene.add( light );
 
-        
-
-
+        //screenshots
         var saveLink = document.createElement('div');
         saveLink.style.position = 'absolute';
         saveLink.style.top = '10px';
@@ -54,10 +54,11 @@ let camera, scene, renderer, controls,
         saveLink.style.color = 'white !important';
         saveLink.style.textAlign = 'center';
         saveLink.innerHTML =
-            //'<a href="#" id="saveLink">Save Frame</a>';
             '<button href="#" id="saveLink">Capturar imagen</button>';
         document.body.appendChild(saveLink);
         document.getElementById("saveLink").addEventListener('click', saveAsImage);
+
+        //render
         renderer = new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,
             antialias: true
@@ -66,26 +67,18 @@ let camera, scene, renderer, controls,
         renderer.setPixelRatio( window.devicePixelRatio );
         document.body.appendChild(renderer.domElement);
 
-        //
 
-        //LINES
-
+        //Lines
 	    CreateOrbits();
-
-	    // Position camera
-	    camera.position.set(0,UA,10 * UA);
-        //camera.rotation.y = 1.57;
-        //controls.update();
-
         
         //Agregar planetas
         CreatePlanets();
 
         //Agregar Estrellas
-        AddStars();
+        MC.AddStars(UA, scene);
 
 
-        //Init Controls
+        //Init Orbit Controls
         controls = new OrbitControls( camera, renderer.domElement );
         controls.minDistance = 1;
         controls.maxDistance = 60000*UA;
@@ -94,7 +87,8 @@ let camera, scene, renderer, controls,
         controls.enableDamping = true;
         controls.dampingFactor = 0.2;
         controls.enableKeys = true;
-        //
+
+        //Menu
         const buttonSol = document.getElementById( "Sol");
         buttonSol.addEventListener( 'click', function () {
 
@@ -165,22 +159,8 @@ let camera, scene, renderer, controls,
 
         }, false );
 
-
-
-        //window.addEventListener('resize', onWindowResize, false);
-
     }
     
-
-function onWindowResize() {
-        // Camera frustum aspect ratio
-        camera.aspect = window.innerWidth / window.innerHeight;
-        // After making changes to aspect
-        camera.updateProjectionMatrix();
-        // Reset size
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio( window.devicePixelRatio );
-}
 
 function animate() {
         requestAnimationFrame(animate);
@@ -206,117 +186,20 @@ function saveAsImage() {
 
 }
 
-    var saveFile = function (strData, filename) {
-        var link = document.createElement('a');
-        if (typeof link.download === 'string') {
-            document.body.appendChild(link); //Firefox requires the link to be in the body
-            link.download = filename;
-            link.href = strData;
-            link.click();
-            document.body.removeChild(link); //remove the link when done
-        } else {
-            location.replace(uri);
-        }
+var saveFile = function (strData, filename) {
+    var link = document.createElement('a');
+    if (typeof link.download === 'string') {
+        document.body.appendChild(link); //Firefox requires the link to be in the body
+        link.download = filename;
+        link.href = strData;
+        link.click();
+        document.body.removeChild(link); //remove the link when done
+    } else {
+        location.replace(uri);
     }
-
-
-
-
-
-export function GoPlanet(planeta){
-
-        if (planeta == 'Sol') {
-    
-            camera.position.x = sun.position.x + 0.08 *UA;
-            camera.position.y = sun.position.y;
-            camera.position.z = sun.position.z - 0.08 *UA;
-            
-            camera.lookAt(new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z));
-            controls.target = new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z);
-            controls.update();
-    
-        } else if (planeta == 'Mercurio'){
-            camera.position.x =  mercury.position.x + 2.5 * escala;
-            camera.position.y = mercury.position.y;
-            camera.position.z = mercury.position.z - 2.5 * escala;
-            camera.lookAt(new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z));
-            controls.target = new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z);
-            controls.update();
-    
-        } else if (planeta == 'Venus'){
-            camera.position.x =  venus.position.x + 2.5 * escala;
-            camera.position.y = venus.position.y;
-            camera.position.z = venus.position.z - 2.5 * escala;
-            camera.lookAt(new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z));
-            controls.target = new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z);
-            controls.update();
-    
-        } else if (planeta == 'Tierra'){
-            camera.position.x =  earth.position.x + 2.5 *escala;
-            camera.position.y = earth.position.y;
-            camera.position.z = earth.position.z - 2.5 *escala;
-            camera.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
-            controls.target = new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z);
-            controls.update();
-    
-        } else if (planeta == 'Luna'){
-            camera.position.x =  moon.position.x + 2.5 *escala;
-            camera.position.y = moon.position.y;
-            camera.position.z = moon.position.z - 2.5 *escala;
-            camera.lookAt(new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z));
-            controls.target = new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z);
-            controls.update();
-    
-    
-         } else if (planeta == 'Marte'){
-    
-            camera.position.x =  mars.position.x + 2.5 *escala;
-            camera.position.y = mars.position.y;
-            camera.position.z = mars.position.z - 2.5 *escala;
-            camera.lookAt(new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z));
-            controls.target = new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z);
-            controls.update();
-    
-         } else if(planeta == 'Jupiter'){
-            camera.position.x = jupiter.position.x + 20*escala ;
-            camera.position.y = jupiter.position.y;
-            camera.position.z = jupiter.position.z - 20*escala;
-            //camera.rotation.y = 1.80;
-            camera.lookAt(new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z));
-            controls.target = new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z);
-            controls.update();
-    
-        } else if(planeta == 'Saturno'){
-            camera.position.x = saturn.position.x + 20 * escala;
-            camera.position.y = saturn.position.y + escala;
-            camera.position.z = saturn.position.z - 20 * escala;
-            //camera.rotation.y = 1.80;
-            camera.lookAt(new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z));
-            controls.target = new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z);
-            controls.update();
-    
-        } else if(planeta == 'Urano'){
-            camera.position.x = uranus.position.x + 20 * escala;
-            camera.position.y = uranus.position.y;
-            camera.position.z = uranus.position.z - 20 * escala;
-            //camera.rotation.y = 1.80;
-            camera.lookAt(new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z));
-            controls.target = new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z);
-            controls.update();
-        } else if(planeta == 'Neptuno'){
-            camera.position.x = neptune.position.x+ 20 * escala;
-            camera.position.y = neptune.position.y;
-            camera.position.z = neptune.position.z - 20 * escala;
-            //camera.rotation.y = 1.80;
-            camera.lookAt(new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z));
-            controls.target = new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z);
-            controls.update();
-    
-         }
-    
 }
     
-       
+//construct objects
     
 function CreateOrbits(){
     //Orbits
@@ -503,10 +386,8 @@ function CreateOrbits(){
 }
     
     
-    function CreatePlanets(){
-    //PLANETS
-    
-        
+function CreatePlanets(){
+    //PLANETS   
     
     const geometrySun = new THREE.SphereBufferGeometry( 109.076 * escala, 100, 100 );
     const geometryCrown = new THREE.PlaneBufferGeometry( 180 * 109.076 * escala, 180 * 109.076 * escala );
@@ -534,7 +415,7 @@ function CreateOrbits(){
     
     
     
-    // Add texture - 
+    // Add textures - 
      //const textureSun = new THREE.TextureLoader().load('textures/heliographic_negative_bw2.jpg');
      const textureCrown = new THREE.TextureLoader().load('textures/star_flare.png');
     
@@ -561,7 +442,6 @@ function CreateOrbits(){
      //textureRing.encoding = THREE.sRGBEncoding;
      textureRing.anisotropy = 16;
      //textureRingAlpha.anisotropy = 16;
-    
     
      const textureUranus = new THREE.TextureLoader().load('textures/2k_uranus.jpg');
     
@@ -604,9 +484,7 @@ function CreateOrbits(){
     const materialNeptune = new THREE.MeshStandardMaterial({map : textureNeptune});
     
     
-    
-    
-    // Create mesh with geo and material
+    // Create mesh with geometry and material
     sun = new THREE.Mesh(geometrySun, materialSun);
     crown = new THREE.Mesh(geometryCrown, materialCrown);
     
@@ -630,11 +508,8 @@ function CreateOrbits(){
     
     neptune = new THREE.Mesh(geometryNeptune, materialNeptune);
     
-    
-    
     sun.position.set(0,0,0);
     crown.position.set(0,0,0);
-    //crown.rotation.y = 0; //Math.PI/4;
     crown.lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
     
     mercury.position.set(0,-0.08*UA,0.39 * UA-1200);
@@ -682,10 +557,10 @@ function CreateOrbits(){
     scene.add(uranus);
     
     scene.add(neptune);
-    }
+}
     
     
-    function SolarSystemAnimate(){
+function SolarSystemAnimate(){
     // Rotate cube (Change values to change speed)
     
     sun.rotation.y += 0.0005;
@@ -709,71 +584,9 @@ function CreateOrbits(){
     uranus.rotation.y += 0.001;
     neptune.rotation.y += 0.001;
     
-    }
-    
-    function AddStars(){
-    
-    
-    // stars
-    const radius = 30*UA;
-    var i, r = radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
-    
-    var vertices1 = [];
-    var vertices2 = [];
-    
-    var vertex = new THREE.Vector3();
-    
-    for ( i = 0; i < 250; i ++ ) {
-    
-        vertex.x = Math.random() * 2 - 1;
-        vertex.y = Math.random() * 2 - 1;
-        vertex.z = Math.random() * 2 - 1;
-        vertex.multiplyScalar( r );
-    
-        vertices1.push( vertex.x, vertex.y, vertex.z );
-    
-    }
-    
-    for ( i = 0; i < 1500; i ++ ) {
-    
-        vertex.x = Math.random() * 2 - 1;
-        vertex.y = Math.random() * 2 - 1;
-        vertex.z = Math.random() * 2 - 1;
-        vertex.multiplyScalar( r );
-    
-        vertices2.push( vertex.x, vertex.y, vertex.z );
-    
-    }
-    
-    starsGeometry[ 0 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
-    starsGeometry[ 1 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
-    
-    var stars;
-    var starsMaterials = [
-        new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
-    ];
-    
-    for ( i = 10; i < 30; i ++ ) {
-    
-        stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
-    
-        stars.rotation.x = Math.random() * 6;
-        stars.rotation.y = Math.random() * 6;
-        stars.rotation.z = Math.random() * 6;
-        stars.scale.setScalar( i * 10 );
-    
-        stars.matrixAutoUpdate = false;
-        stars.updateMatrix();
-    
-        scene.add( stars );
-    
-    }
 }
+    
+//terminal & commands
 
 export function CommandExecute(COMMAND){
     var response;
@@ -895,6 +708,111 @@ export function CommandExecute(COMMAND){
       
     }
     return response;
+}
+
+function GoPlanet(planeta){
+
+    if (planeta == 'Sol') {
+
+        camera.position.x = sun.position.x + 0.08 *UA;
+        camera.position.y = sun.position.y;
+        camera.position.z = sun.position.z - 0.08 *UA;
+        
+        camera.lookAt(new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z));
+        controls.target = new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z);
+        controls.update();
+
+    } else if (planeta == 'Mercurio'){
+        camera.position.x =  mercury.position.x + 2.5 * escala;
+        camera.position.y = mercury.position.y;
+        camera.position.z = mercury.position.z - 2.5 * escala;
+        camera.lookAt(new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z));
+        controls.target = new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z);
+        controls.update();
+
+    } else if (planeta == 'Venus'){
+        camera.position.x =  venus.position.x + 2.5 * escala;
+        camera.position.y = venus.position.y;
+        camera.position.z = venus.position.z - 2.5 * escala;
+        camera.lookAt(new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z));
+        controls.target = new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z);
+        controls.update();
+
+    } else if (planeta == 'Tierra'){
+        camera.position.x =  earth.position.x + 2.5 *escala;
+        camera.position.y = earth.position.y;
+        camera.position.z = earth.position.z - 2.5 *escala;
+        camera.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
+        controls.target = new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z);
+        controls.update();
+
+    } else if (planeta == 'Luna'){
+        camera.position.x =  moon.position.x + 2.5 *escala;
+        camera.position.y = moon.position.y;
+        camera.position.z = moon.position.z - 2.5 *escala;
+        camera.lookAt(new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z));
+        controls.target = new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z);
+        controls.update();
+
+
+     } else if (planeta == 'Marte'){
+
+        camera.position.x =  mars.position.x + 2.5 *escala;
+        camera.position.y = mars.position.y;
+        camera.position.z = mars.position.z - 2.5 *escala;
+        camera.lookAt(new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z));
+        controls.target = new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z);
+        controls.update();
+
+     } else if(planeta == 'Jupiter'){
+        camera.position.x = jupiter.position.x + 20*escala ;
+        camera.position.y = jupiter.position.y;
+        camera.position.z = jupiter.position.z - 20*escala;
+        //camera.rotation.y = 1.80;
+        camera.lookAt(new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z));
+        controls.target = new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z);
+        controls.update();
+
+    } else if(planeta == 'Saturno'){
+        camera.position.x = saturn.position.x + 20 * escala;
+        camera.position.y = saturn.position.y + escala;
+        camera.position.z = saturn.position.z - 20 * escala;
+        //camera.rotation.y = 1.80;
+        camera.lookAt(new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z));
+        controls.target = new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z);
+        controls.update();
+
+    } else if(planeta == 'Urano'){
+        camera.position.x = uranus.position.x + 20 * escala;
+        camera.position.y = uranus.position.y;
+        camera.position.z = uranus.position.z - 20 * escala;
+        //camera.rotation.y = 1.80;
+        camera.lookAt(new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z));
+        controls.target = new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z);
+        controls.update();
+    } else if(planeta == 'Neptuno'){
+        camera.position.x = neptune.position.x+ 20 * escala;
+        camera.position.y = neptune.position.y;
+        camera.position.z = neptune.position.z - 20 * escala;
+        //camera.rotation.y = 1.80;
+        camera.lookAt(new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z));
+        controls.target = new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z);
+        controls.update();
+
+     }
+
+}
+
+//window
+
+function onWindowResize() {
+    // Camera frustum aspect ratio
+    camera.aspect = window.innerWidth / window.innerHeight;
+    // After making changes to aspect
+    camera.updateProjectionMatrix();
+    // Reset size
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio( window.devicePixelRatio );
 }
 
 window.addEventListener('resize', onWindowResize, false);

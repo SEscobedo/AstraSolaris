@@ -2,7 +2,7 @@
 Modelo virtual del Sistema Solar
 
 ## Objetivos
-Este proycto intenta crear un modelo del sistema solar científicamente preciso y lo más completo posible.
+Este proyecto intenta crear un modelo del sistema solar científicamente preciso y lo más completo posible.
 El modelo contiene una representación fidedigna de las siguentes listas de objetos:
 
 1. El Sol
@@ -26,5 +26,6 @@ La versión de prueba del modelo se encuentra en en www.macrocosmos.software/ast
 ## Cómo colaborar
 
 Las modificaciones a los archivos se pueden hacer directamente en la plataforma o enviándolas desde un reposiorio local. Deben hacerse a la rama Develop. Después de ser revisadas, cada cierto tiempo se hará la fusión de la rama Develop a la rama Master, y los cambios quedarán disponibles en el modelo en línea.
+
 
 
