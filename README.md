@@ -21,7 +21,7 @@ Este repositorio contiene dos archivos por cada una de las categorías mostradas
 
 La carpeta apps contiene el código fuente de las funciones utilizadas para fines específicos (simulación de efectos físicos, interpretación de instrucciones especiales, generación de geometría de referencia, etc.) Información más específica sobre estas funciones se puede contrar en los documentos wiki.
 
-La versión de prueba del modelo se encuentra en en www.macrocosmos.software/astrasolarisbeta
+La versión de prueba del modelo se encuentra en en www.astrasolaris.org/solarsystem
 
 ## Cómo colaborar
 
