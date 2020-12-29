@@ -37,7 +37,7 @@
 				camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.3, 15 );
 				camera.position.set( 2.5, 0.3, 2.5 );
 
-				cameraTarget = new THREE.Vector3( 0, - 0.25, 0 );
+				cameraTarget = new THREE.Vector3( 0, 0, 0 );
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0x16161a );
@@ -156,7 +156,15 @@
 
 			} );*/
 
+			var manager = new THREE.LoadingManager();
 
+			manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+    		progressElement.style.width = (itemsLoaded / itemsTotal * 100) + '%';
+			};
+
+			var Loaders = {
+    		Texture: new THREE.TextureLoader(manager)
+			}
 						
 
 				// Lights
