@@ -3,12 +3,13 @@ import { OrbitControls } from './../node_modules/three/examples/jsm/controls/Orb
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
 import * as MC from './model_constructor.js';
 
-let camera, scene, renderer, cameraControls, controls
+let camera, scene, renderer, cameraControls, controls,
  mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
  sun, crown,
  Orbit_mercury, Orbit_venus, Orbit_earth, Orbit_mars, Orbit_jupiter, Orbit_saturn, Orbit_uranus, Orbit_neptune, Orbit_moon,
  escala, UA;
  var tm = new Date();
+ const clock = new THREE.Clock();
 
     //var mesh;
     var strDownloadMime = "image/octet-stream";
@@ -727,92 +728,171 @@ export function CommandExecute(COMMAND){
 function GoPlanet(planeta){
 
     if (planeta == 'Sol') {
-
-        cameraControls.moveTo(sun.position.x + 0.08 *UA, sun.position.y, sun.position.z - 0.08 *UA,true)
-        /*camera.position.x = sun.position.x + 0.08 *UA;
-        camera.position.y = sun.position.y;
-        camera.position.z = sun.position.z - 0.08 *UA;
-        
-        camera.lookAt(new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z));
-        controls.target = new THREE.Vector3(sun.position.x, sun.position.y, sun.position.z);
-        controls.update();*/
+        cameraControls.setTarget(
+            sun.position.x, 
+            sun.position.y, 
+            sun.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            sun.position.x + 0.08 * UA, 
+            sun.position.y, 
+            sun.position.z - 0.08 *UA, 
+            sun.position.x, 
+            sun.position.y, 
+            sun.position.z, 
+            true);
 
     } else if (planeta == 'Mercurio'){
-        camera.position.x =  mercury.position.x + 2.5 * escala;
-        camera.position.y = mercury.position.y;
-        camera.position.z = mercury.position.z - 2.5 * escala;
-        camera.lookAt(new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z));
-        controls.target = new THREE.Vector3(mercury.position.x, mercury.position.y, mercury.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            mercury.position.x, 
+            mercury.position.y, 
+            mercury.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            mercury.position.x + 2.5 * escala, 
+            mercury.position.y, 
+            mercury.position.z - 2.5 * escala, 
+            mercury.position.x, 
+            mercury.position.y, 
+            mercury.position.z, 
+            true);
 
     } else if (planeta == 'Venus'){
-        camera.position.x =  venus.position.x + 2.5 * escala;
-        camera.position.y = venus.position.y;
-        camera.position.z = venus.position.z - 2.5 * escala;
-        camera.lookAt(new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z));
-        controls.target = new THREE.Vector3(venus.position.x, venus.position.y, venus.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            venus.position.x, 
+            venus.position.y, 
+            venus.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            venus.position.x + 2.5 * escala, 
+            venus.position.y, 
+            venus.position.z - 2.5 * escala, 
+            venus.position.x, 
+            venus.position.y, 
+            venus.position.z, 
+            true);
 
     } else if (planeta == 'Tierra'){
-        camera.position.x =  earth.position.x + 2.5 *escala;
-        camera.position.y = earth.position.y;
-        camera.position.z = earth.position.z - 2.5 *escala;
-        camera.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
-        controls.target = new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z);
-        controls.update();
+
+        cameraControls.setTarget(
+            earth.position.x, 
+            earth.position.y, 
+            earth.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            earth.position.x + 2.5 *escala, 
+            earth.position.y, 
+            earth.position.z - 2.5 *escala, 
+            earth.position.x, 
+            earth.position.y, 
+            earth.position.z, 
+            true);
 
     } else if (planeta == 'Luna'){
-        camera.position.x =  moon.position.x + 2.5 *escala;
-        camera.position.y = moon.position.y;
-        camera.position.z = moon.position.z - 2.5 *escala;
-        camera.lookAt(new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z));
-        controls.target = new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z);
-        controls.update();
+           cameraControls.setTarget(
+            moon.position.x, 
+            moon.position.y, 
+            moon.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            moon.position.x + 2.5 *escala, 
+            moon.position.y, 
+            moon.position.z - 2.5 *escala, 
+            moon.position.x, 
+            moon.position.y, 
+            moon.position.z, 
+            true);
 
 
      } else if (planeta == 'Marte'){
+        cameraControls.setTarget(
+            mars.position.x, 
+            mars.position.y, 
+            mars.position.z, 
+            true
+        );       
 
-        camera.position.x =  mars.position.x + 2.5 *escala;
-        camera.position.y = mars.position.y;
-        camera.position.z = mars.position.z - 2.5 *escala;
-        camera.lookAt(new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z));
-        controls.target = new THREE.Vector3(mars.position.x, mars.position.y, mars.position.z);
-        controls.update();
+        cameraControls.setLookAt( 
+            mars.position.x + 2.5 *escala, 
+            mars.position.y, 
+            mars.position.z - 2.5 *escala, 
+            mars.position.x, 
+            mars.position.y, 
+            mars.position.z, 
+            true);
 
      } else if(planeta == 'Jupiter'){
-        camera.position.x = jupiter.position.x + 20*escala ;
-        camera.position.y = jupiter.position.y;
-        camera.position.z = jupiter.position.z - 20*escala;
-        //camera.rotation.y = 1.80;
-        camera.lookAt(new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z));
-        controls.target = new THREE.Vector3(jupiter.position.x, jupiter.position.y, jupiter.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            jupiter.position.x, 
+            jupiter.position.y, 
+            jupiter.position.z, 
+            true
+        ); 
+        
+        cameraControls.setLookAt( 
+            jupiter.position.x + 20 *escala, 
+            jupiter.position.y, 
+            jupiter.position.z - 20 *escala, 
+            jupiter.position.x, 
+            jupiter.position.y, 
+            jupiter.position.z, 
+            true);
+
 
     } else if(planeta == 'Saturno'){
-        camera.position.x = saturn.position.x + 20 * escala;
-        camera.position.y = saturn.position.y + escala;
-        camera.position.z = saturn.position.z - 20 * escala;
-        //camera.rotation.y = 1.80;
-        camera.lookAt(new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z));
-        controls.target = new THREE.Vector3(saturn.position.x, saturn.position.y, saturn.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            saturn.position.x, 
+            saturn.position.y, 
+            saturn.position.z, 
+            true
+        ); 
+        cameraControls.setLookAt( 
+            saturn.position.x + 20 *escala, 
+            saturn.position.y + 1.5 * escala, 
+            saturn.position.z - 20 *escala, 
+            saturn.position.x, 
+            saturn.position.y, 
+            saturn.position.z, 
+            true);
+
 
     } else if(planeta == 'Urano'){
-        camera.position.x = uranus.position.x + 20 * escala;
-        camera.position.y = uranus.position.y;
-        camera.position.z = uranus.position.z - 20 * escala;
-        //camera.rotation.y = 1.80;
-        camera.lookAt(new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z));
-        controls.target = new THREE.Vector3(uranus.position.x, uranus.position.y, uranus.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            uranus.position.x, 
+            uranus.position.y, 
+            uranus.position.z, 
+            true
+        ); 
+        cameraControls.setLookAt( 
+            uranus.position.x + 20 *escala, 
+            uranus.position.y, 
+            uranus.position.z - 20 *escala, 
+            uranus.position.x, 
+            uranus.position.y, 
+            uranus.position.z, 
+            true);
+
     } else if(planeta == 'Neptuno'){
-        camera.position.x = neptune.position.x+ 20 * escala;
-        camera.position.y = neptune.position.y;
-        camera.position.z = neptune.position.z - 20 * escala;
-        //camera.rotation.y = 1.80;
-        camera.lookAt(new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z));
-        controls.target = new THREE.Vector3(neptune.position.x, neptune.position.y, neptune.position.z);
-        controls.update();
+        cameraControls.setTarget(
+            neptune.position.x, 
+            neptune.position.y, 
+            neptune.position.z, 
+            true
+        ); 
+
+        cameraControls.setLookAt( 
+            neptune.position.x + 20 *escala, 
+            neptune.position.y, 
+            neptune.position.z - 20 *escala, 
+            neptune.position.x, 
+            neptune.position.y, 
+            neptune.position.z, 
+            true);
 
      }
 
