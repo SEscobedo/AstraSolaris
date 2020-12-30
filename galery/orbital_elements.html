@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>AstraSolaris - Orbital elements</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="./../css/main.css">
+	</head>
+	<body>
+		<div id="info">
+			<h3><a href="https://spaceflight.nasa.gov/realdata/elements/index.html" target="_blank" rel="noopener">Elementos orbitales</a></h3>
+            Animación y modelo por <a href="http://www.astrasolaris.org" target="_blank" rel="noopener">AstraSolaris</a>.<br/>
+            Proyecto en construcción. <a href="https://github.com/SEscobedo/AstraSolaris/tree/master/galery/orbital_elements.html" target="_blank" rel="noopener">Ver Código fuente</a>.<br/>
+		</div>
+
+		<script type="module">
+
+			import * as THREE from './../node_modules/three/build/three.module.js';
+            import Stats from './../node_modules/three/examples/jsm/libs/stats.module.js';
+            import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
+
+
+			let container, stats, planet, cameraControls, satellite, Orbit_Line, time, SatPosVector,origin;
+            let camera, cameraTarget, scene, renderer;
+            const clock = new THREE.Clock();
+            time = 0;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+                document.body.appendChild( container );
+                
+                CameraControls.install( { THREE: THREE } );
+
+				camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.3, 100 );
+				camera.position.set( 2.5, 0.3, 2.5 );
+
+				cameraTarget = new THREE.Vector3( 0, 0, 0 );
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x16161a );
+				scene.fog = new THREE.Fog( 0x72645b, 0.05, 70 );
+
+				// ecuatorial plane
+
+				const plane = new THREE.Mesh(
+					new THREE.PlaneBufferGeometry( 3, 3 ),
+					new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010,  side: THREE.DoubleSide } )
+				);
+				plane.rotation.x = - Math.PI / 2;
+				plane.position.y = 0;
+				scene.add( plane );
+
+                plane.receiveShadow = true;
+                
+                
+                //planet
+                const planet = new THREE.Mesh(
+					new THREE.SphereBufferGeometry( 0.5, 40, 40),
+					new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } )
+                );
+                planet.position.set(0,0,0);
+                scene.add( planet );
+
+                
+
+                //Vernal equinox
+                const dirX = new THREE.Vector3( 0, 0, 1 );
+                origin = new THREE.Vector3( 0, 0, 0 );
+                const VernalEquinox = new THREE.ArrowHelper( dirX, origin, 2, 0xffff00 );
+                scene.add( VernalEquinox );
+
+                const dirZ = new THREE.Vector3( 1, 0, 0 );
+                const VernalEquinoxOrto = new THREE.ArrowHelper( dirZ, origin, 2, 0xffff00 );
+                scene.add( VernalEquinoxOrto );
+
+                const dirY = new THREE.Vector3( 0, 1, 0 );
+                const VernalEquinoxOrtoY = new THREE.ArrowHelper( dirY, origin, 2, 0xffff00 );
+                scene.add( VernalEquinoxOrtoY );
+
+               
+                
+                //Orbit
+                const a = 1.5;
+                const b = 1.3;
+                const e = Math.sqrt(1-Math.pow(b,2)/Math.pow(a,2));
+                const f = a * e;
+
+                Orbit_Line = new THREE.EllipseCurve(
+                    f,  0,            // ax, aY
+                    a, b, // xRadius (semieje menor), yRadius (semieje mayor)
+                    0,  2 * Math.PI,  // aStartAngle, aEndAngle
+                    false,            // aClockwise
+                    0//50 / 180* Math.PI  // aRotation
+                );
+               
+
+                var points = Orbit_Line.getPoints( 100 );
+                var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
+                
+                var materialOrbit = new THREE.LineBasicMaterial( { color : 0xfffA00 } );
+                
+                // Create the final object to add to the scene
+                const Orbit = new THREE.Line( geometryOrbit, materialOrbit );
+               // Orbit.rotation.x = 90 / 180* Math.PI + 0.5; //90 grados + algo
+                //Orbit.updateMatrix();
+                
+                scene.add(Orbit);
+
+                 //Normal axis to the orbit plane
+                const dirN = new THREE.Vector3( 0, 0, 0.5 );
+                dirN.normalize();
+                const NormalAxis = new THREE.ArrowHelper( dirN, origin, 1.5, 0x228811 );
+                scene.add( NormalAxis);
+
+
+                 //orbiting object
+                satellite = new THREE.Mesh(
+					new THREE.SphereBufferGeometry( 0.05, 10, 10),
+					new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } )
+                );
+                const r = Orbit_Line.getPoint(0.5);
+                satellite.position.set(r.x,r.y,r.z);
+                scene.add( satellite );
+
+                //Position Vector
+                const dirSat = satellite.position.clone();
+                dirSat.normalize();
+                SatPosVector = new THREE.ArrowHelper( dirSat, origin, origin.distanceTo(satellite.position), 0xff0000 );
+                scene.add( SatPosVector );
+
+                 //Perigee direction
+                const per = Orbit_Line.getPoint(0.5);
+                const dirPer = new THREE.Vector3( per.x, per.y, per.z);
+                dirPer.normalize();
+                const PerigeeVector = new THREE.ArrowHelper( dirPer, origin, origin.distanceTo(satellite.position), 0x000fff);
+                scene.add( PerigeeVector );
+
+                //Line of nodes
+                const Nodes = Orbit_Line.getPoint(0.25);
+                const dirNodes = new THREE.Vector3( Nodes.x, Nodes.y, Nodes.z);
+                dirNodes.normalize();
+                const lineOfNodes = new THREE.ArrowHelper( dirNodes, origin, 2, 0x000fff);
+                scene.add( lineOfNodes );
+
+                
+
+			var manager = new THREE.LoadingManager();
+
+			manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+    		progressElement.style.width = (itemsLoaded / itemsTotal * 100) + '%';
+			};
+
+			var Loaders = {
+    		Texture: new THREE.TextureLoader(manager)
+			}
+						
+
+				// Lights
+
+				scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
+
+				addShadowedLight( 1, 1, 1, 0xffffff, .8 );
+				addShadowedLight( 0.5, 1, - 1, 0xffaa00, .7 );
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.outputEncoding = THREE.sRGBEncoding;
+
+				renderer.shadowMap.enabled = true;
+
+			
+                container.appendChild( renderer.domElement );
+                
+                //camera controls
+                cameraControls = new CameraControls( camera, renderer.domElement );
+                cameraControls.dampingFactor = 0.05;
+                cameraControls.draggingDampingFactor=0.25;
+                cameraControls.verticalDragToForward = true;
+
+				// stats
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+
+			function addShadowedLight( x, y, z, color, intensity ) {
+
+				const directionalLight = new THREE.DirectionalLight( color, intensity );
+				directionalLight.position.set( x, y, z );
+				scene.add( directionalLight );
+
+				directionalLight.castShadow = true;
+
+				const d = 1;
+				directionalLight.shadow.camera.left = - d;
+				directionalLight.shadow.camera.right = d;
+				directionalLight.shadow.camera.top = d;
+				directionalLight.shadow.camera.bottom = - d;
+
+				directionalLight.shadow.camera.near = 1;
+				directionalLight.shadow.camera.far = 4;
+
+				directionalLight.shadow.bias = - 0.002;
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				const delta = clock.getDelta();
+	            const elapsed = clock.getElapsedTime();
+                const updated = cameraControls.update( delta );
+                time += 0.001
+                const r = Orbit_Line.getPoint(time);
+                satellite.position.set(r.x,r.y,r.z);
+                const dirSat = satellite.position.clone();
+                dirSat.normalize();
+                SatPosVector.setDirection(dirSat);
+                const distance = origin.distanceTo(satellite.position)
+                SatPosVector.setLength(distance); 
+
+				render();
+				stats.update();
+
+
+			}
+
+			function render() {
+
+				//const timer = Date.now() * 0.0002;
+
+				//camera.position.x = Math.cos( timer / 5 ) * 3;
+				//camera.position.z = Math.sin( timer / 5 ) * 3;
+				//asteroid.rotation.set( 0,-2*timer, 0 );
+
+				camera.lookAt( cameraTarget );
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>
