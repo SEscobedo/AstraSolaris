@@ -64,4 +64,72 @@ export function AddStars(UA, scene){
         scene.add( stars );
     
     }
+
+}
+
+export function SkyReference(radius, scene){
+    var i;
+    let Group = new THREE.Group();
+    
+    //paralelos
+    for (i=0;i < 18; i++){
+    const curve = new THREE.EllipseCurve(
+        0,  0,            // ax, aY
+        radius, radius,           // xRadius, yRadius
+        0,  2 * Math.PI,  // aStartAngle, aEndAngle
+        false,            // aClockwise
+        0                 // aRotation
+    );
+    
+
+    const points = curve.getPoints( 50 );
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+    var color1;
+    if (i==0) color1 =  0xe64949;
+    else color1 =  0x101010;
+    const material = new THREE.LineBasicMaterial( { color : color1} );
+    
+    // Create the final object to add to the scene
+    const ellipse = new THREE.Line( geometry, material );
+    ellipse.rotation.y += 10*i / 180 * Math.PI;
+
+    Group.add(ellipse); 
+
+    }
+
+    //Meridianos
+    for (i=0;i < 9; i++){
+        const h = radius * Math.sin(10*i / 180* Math.PI);
+        const r = radius * Math.cos(10*i / 180* Math.PI);
+        const curve = new THREE.EllipseCurve(
+            0,  0,            // ax, aY
+            r, r,           // xRadius, yRadius
+            0,  2 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        
+    
+        const points = curve.getPoints( 50 );
+        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+        
+        var color2;
+        if (i==0) color2 =  0xe64949;
+        else color2 =  0x101010;
+        const material = new THREE.LineBasicMaterial( { color : color2 } );
+        
+        // Create the final object to add to the scene
+        const ellipse = new THREE.Line( geometry, material );
+        ellipse.rotation.x = 90 / 180* Math.PI;
+        const ellipse2 = ellipse.clone();
+        ellipse.position.set(0,h,0);
+        ellipse2.position.set(0,-h,0);
+
+    
+        Group.add(ellipse); 
+        Group.add(ellipse2); 
+    
+        }
+        scene.add(Group);
 }

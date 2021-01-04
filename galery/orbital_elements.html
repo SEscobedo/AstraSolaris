@@ -281,14 +281,13 @@
 	            const elapsed = clock.getElapsedTime();
                 const updated = cameraControls.update( delta );
                 //if (time > 1) t = 0;
-                time += 0.001
-
+                time += 0.0005
+                const distance = origin.distanceTo(satellite.position);
                 const r = Orbit_Line.getPoint(time);
                 satellite.position.set(r.x,r.y,r.z);
                 const dirSat = satellite.position.clone();
                 dirSat.normalize();
                 SatPosVector.setDirection(dirSat);
-                const distance = origin.distanceTo(satellite.position)
                 SatPosVector.setLength(distance); 
 
 				render();
