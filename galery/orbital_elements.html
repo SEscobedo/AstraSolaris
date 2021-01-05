@@ -18,6 +18,7 @@
 			import * as THREE from './../node_modules/three/build/three.module.js';
             import Stats from './../node_modules/three/examples/jsm/libs/stats.module.js';
             import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
+            import {CreateOsculOrbit2} from './../js/model_constructor2.js';
 
 
 			let container, stats, planet, cameraControls, satellite, Orbit_Line, time, SatPosVector,origin, orbitGroup;
@@ -108,8 +109,8 @@
                     false,            // aClockwise
                     0                 // aRotation
                 );
-                
-                
+
+
 
                 var points = Orbit_Line.getPoints( 100 );
                 var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
@@ -118,7 +119,9 @@
                 
                 // Create the final object to add to the scene
                 const Orbit = new THREE.Line( geometryOrbit, materialOrbit );
-            
+                console.log(Orbit);
+               // const Orbit = CreateOsculOrbit2(0,0,0,e,0,0,0,a,"Orbit");
+                
 
                  //orbiting object
                 satellite = new THREE.Mesh(

@@ -1,6 +1,6 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-import * as MC from './model_constructor2.js';
+import * as MC from './model_constructor.js';
 
 
 let camera, scene, renderer, cameraControls, controls,
@@ -79,6 +79,7 @@ let camera, scene, renderer, cameraControls, controls,
         
         //Agregar planetas
         CreatePlanets();
+        //MC.CreatePlanets(escala,UA,scene);
 
         //Agregar Estrellas
         MC.AddStars(UA, scene);
@@ -357,7 +358,7 @@ function CreateOrbits(){
         // Create the final object to add to the scene
         Orbit_saturn = new THREE.Line( geometryOrbitS, materialOrbitS );
         Orbit_saturn.rotation.x = 90 / 180* Math.PI;
-        scene.add(Orbit_saturn)
+        scene.add(Orbit_saturn);
     
     
         //Uranus
@@ -503,26 +504,35 @@ function CreatePlanets(){
     // Create mesh with geometry and material
     sun = new THREE.Mesh(geometrySun, materialSun);
     crown = new THREE.Mesh(geometryCrown, materialCrown);
+    sun.name = 'Sol';
     
     mercury = new THREE.Mesh(geometryMercury, materialMercury);
+    mercury.name = 'Mercurio';
     venus = new THREE.Mesh(geometryVenus, materialVenus);
-    
+    venus.name = 'Venus';
     earth = new THREE.Mesh(geometryEarth, materialEarth);
     earthAtmos = new THREE.Mesh(geometryEarthAtmos, materialEarthAtmos);
-    
+    earth.name = 'Tierra';
+
     mars = new THREE.Mesh(geometryMars, materialMars);
     marsAtmos = new THREE.Mesh(geometryMarsAtmosphere, materialMarsAtmos);
+    mars.name = 'Marte';
     
     moon = new THREE.Mesh(geometryMoon, materialMoon);
+    moon.name = 'Luna';
     
     jupiter = new THREE.Mesh(geometryJupiter, materialJupiter);
-    
+    jupiter.name = 'Jupiter';
+
     saturn = new THREE.Mesh(geometrySaturn, materialSaturn);
     ring = new THREE.Mesh(geometryRing, materialRing);
+    saturn.name = 'Saturno';
     
     uranus = new THREE.Mesh(geometryUranus, materialUranus);
-    
+    uranus.name = 'Urano';
+
     neptune = new THREE.Mesh(geometryNeptune, materialNeptune);
+    neptune.name = 'Neptuno';
     
     sun.position.set(0,0,0);
     crown.position.set(0,0,0);
@@ -579,26 +589,26 @@ function CreatePlanets(){
 function SolarSystemAnimate(){
     // Rotate cube (Change values to change speed)
     
-    sun.rotation.y += 0.0005;
+    //scene.getObjectByName("sun").rotation.y += 0.0005;
     crown.lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
     
-    mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
-    venus.rotation.y -= 0.001;
+    //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
+    //venus.rotation.y -= 0.001;
    
     const desfase = 3.2; //desfase resepcto a la hora local
-    earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
-    earthAtmos.rotation.y += 0.00005;
+    //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
+    //earthAtmos.rotation.y += 0.00005;
     //moon.rotation.y += 0.00015;
     
-    mars.rotation.y += 0.001;
-    marsAtmos.rotation.y += 0.001;
+    //mars.rotation.y += 0.001;
+    //marsAtmos.rotation.y += 0.001;
     
-    jupiter.rotation.y += 0.001;
-    saturn.rotation.y += 0.001;
+    //jupiter.rotation.y += 0.001;
+    //saturn.rotation.y += 0.001;
     //ring.rotation.x += -0.01;
     
-    uranus.rotation.y += 0.001;
-    neptune.rotation.y += 0.001;
+    //uranus.rotation.y += 0.001;
+    //neptune.rotation.y += 0.001;
     
 }
     
@@ -727,8 +737,43 @@ export function CommandExecute(COMMAND){
 }
 
 function GoPlanet(planeta){
+    const object = scene.getObjectByName(planeta);
 
     if (planeta == 'Sol') {
+        cameraControls.setTarget(
+            object.position.x, 
+            object.position.y, 
+            object.position.z, 
+            true
+        );
+        cameraControls.setLookAt( 
+            object.position.x + 0.08 * UA, 
+            object.position.y, 
+            object.position.z - 0.08 *UA, 
+            object.position.x, 
+            object.position.y, 
+            object.position.z, 
+            true);
+    }
+    else{
+    
+    cameraControls.setTarget(
+        object.position.x, 
+        object.position.y, 
+        object.position.z, 
+        true
+    ); 
+    
+    cameraControls.setLookAt( 
+        object.position.x + 20 * escala, 
+        object.position.y, 
+        object.position.z - 20 * escala, 
+        object.position.x, 
+        object.position.y, 
+        object.position.z, 
+        true);
+    }
+    /*if (planeta == 'Sol') {
         cameraControls.setTarget(
             sun.position.x, 
             sun.position.y, 
@@ -895,7 +940,7 @@ function GoPlanet(planeta){
             neptune.position.z, 
             true);
 
-     }
+     }*/
 
 }
 
