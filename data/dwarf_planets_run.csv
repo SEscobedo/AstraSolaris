@@ -1,6 +1,6 @@
-Name,Relative Ecuatorial Diameter,Relative Polar Diameter, Orbit semimajor axes [UA],Inclination [Rad],Eccentricity, Orbit Rotation_X [Rad], Orbit Rotation_Y [Rad],Mesh [dataset]
-Ceres,0.148319,0.148319,2.768,0.18483037,0.079,,,
-Pluto,,,,,,,,
-Eris,,,,,,,,
-Makemake,,,,,,,,
-Haumea,,,,,,,,
+Name,Relative Ecuatorial Diameter,Relative Polar Diameter," Orbit semimajor axis [UA]",Inclination [Rad],Eccentricity," Orbit Rotation_X [Rad]"," Orbit Rotation_Y [Rad]",Mesh [dataset]
+Ceres,0.148319,0.148319,"2.768",0.18483037,0.079,"","",
+Pluto,,,"39.48168677",0.29917997705,0.24880766,"3.91070270627","1.92515872787",
+Eris,,,"",,,"","",
+Makemake,,,"",,,"","",
+Haumea,,,"",,,"","",

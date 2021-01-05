@@ -20,7 +20,7 @@
     import * as THREE from './../node_modules/three/build/three.module.js';
     import Stats from './../node_modules/three/examples/jsm/libs/stats.module.js';
     import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-    import {AddStars, SkyReference} from './../js/model_constructor.js';
+    import {AddStars, SkyReference, CreateReferenceGeometry} from './../js/model_constructor.js';
 
 
 
@@ -66,6 +66,9 @@
 
         //Lines
         SkyReference(1000*UA,scene);
+        
+
+        
 
     var manager = new THREE.LoadingManager();
 

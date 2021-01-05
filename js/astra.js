@@ -1,7 +1,8 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { OrbitControls } from './../node_modules/three/examples/jsm/controls/OrbitControls.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-import * as MC from './model_constructor.js';
+import * as MC from './model_constructor2.js';
+
 
 let camera, scene, renderer, cameraControls, controls,
  mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
@@ -74,7 +75,8 @@ let camera, scene, renderer, cameraControls, controls,
 
 
         //Lines
-	    CreateOrbits();
+        //CreateOrbits();
+        //MC.CreateOrbits(UA,scene);
         
         //Agregar planetas
         CreatePlanets();

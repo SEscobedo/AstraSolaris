@@ -1,8 +1,25 @@
-Name,Moon of,Relative Ecuatorial Diameter,Relative Polar Diameter, Orbit semimajor axes [UA],Inclination [Rad],Eccentricity, Orbit Rotation_X [Rad], Orbit Rotation_Y [Rad],Mesh [dataset]
-Moon,Earth,,,,,,,,
-Phobos,Mars,,,,,,,,
-Deimos,Mars,,,,,,,,
-Io,Jupiter,,,,,,,,
-Europa,Jupiter,,,,,,,,
-Ganymede,Jupiter,,,,,,,,
-Callisto,Jupiter,,,,,,,,
+Name,Moon of,Relative Ecuatorial Diameter,Relative Polar Diameter," Orbit semimajor axis [UA]",Inclination [Rad],Eccentricity," Orbit Rotation_X [Rad]"," Orbit Rotation_Y [Rad]",Mesh [dataset]
+Moon,Earth,,,"0.002567792",0.08979719,0.0549,"","",
+Phobos,Mars,,,"",,,"","",
+Deimos,Mars,,,"",,,"","",
+Io,Jupiter,,,"",,,"","",
+Europa,Jupiter,,,"",,,"","",
+Ganymede,Jupiter,,,"",,,"","",
+Callisto,Jupiter,,,"",,,"","",
+Adrastea,Jupiter,"","","","","","","",""
+Aitne,Jupiter,"","","","","","","",""
+Amalthea,Jupiter,"","","","","","","",""
+Ananke,Jupiter,"","","","","","","",""
+Aoede,Jupiter,"","","","","","","",""
+Arche,Jupiter,"","","","","","","",""
+Autonoe,Jupiter,"","","","","","","",""
+Callirrhoe,Jupiter,"","","","","","","",""
+Carme,Jupiter,"","","","","","","",""
+Carpo,Jupiter,"","","","","","","",""
+Chaldene,Jupiter,"","","","","","","",""
+Cyllene,Jupiter,"","","","","","","",""
+Dia,Jupiter,"","","","","","","",""
+Eirene,Jupiter,"","","","","","","",""
+Elara,Jupiter,"","","","","","","",""
+Erinome,Jupiter,"","","","","","","",""
+Ersa,Jupiter,"","","","","","","",""
