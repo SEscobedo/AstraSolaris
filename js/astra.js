@@ -1,7 +1,7 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { OrbitControls } from './../node_modules/three/examples/jsm/controls/OrbitControls.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-import * as MC from './model_constructor2.js';
+import * as MC from './model_constructor.js';
 
 
 let camera, scene, renderer, cameraControls, controls,
