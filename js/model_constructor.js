@@ -37,7 +37,28 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
  url[16] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/uranus_oscul_2000-2024.csv";
  url[17] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/neptune_oscul_2000-2024.csv";
  url[18] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/halley_oscul_2000-2024.csv";
+
  load_papa_parse();
+
+ export function CreateSun(EarthScale,scene){
+
+    const geometrySun = new THREE.SphereBufferGeometry( 109.076 * EarthScale, 100, 100 );
+    const geometryCrown = new THREE.PlaneBufferGeometry( 180 * 109.076 * EarthScale, 180 * 109.076 * EarthScale );
+    //const textureSun = new THREE.TextureLoader().load('textures/heliographic_negative_bw2.jpg');
+    const textureCrown = new THREE.TextureLoader().load('textures/star_flare.png');
+    //const materialSun = new THREE.MeshStandardMaterial({emissiveMap : textureSun,emissive: 0xFFFFFF,emissiveIntensity:1});
+    const materialSun = new THREE.MeshStandardMaterial({color:0xFFFFFF,emissive: 0xFFFFFF,emissiveIntensity:1});
+    const materialCrown = new THREE.MeshStandardMaterial({emissiveMap : textureCrown, alphaMap:textureCrown, emissive: 0xFFFFFF,emissiveIntensity:1,transparent:true,opacity:1});
+    sun = new THREE.Mesh(geometrySun, materialSun);
+    crown = new THREE.Mesh(geometryCrown, materialCrown);
+    sun.name = 'Sun';
+    crown.name = 'crown';
+    sun.position.set(0,0,0);
+    crown.position.set(0,0,0);
+
+    scene.add(sun);
+    scene.add(crown);
+ }
 
  export function CreatePlanets(EarthScale,UA,scene){
     //Import orbit parameters 
@@ -52,6 +73,7 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
         },
         complete: function(results) { 
              //Parámetros orbitales
+             const loader = new THREE.TextureLoader();
              for(var i=0;i < results.data.length;i++){
                
                 const EC = Number(results.data[i]["Eccentricity"]); //Eccentricity
@@ -59,10 +81,28 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                 const OM = Number(results.data[i]["Orbit Rotation_Y [Rad]"]) ; //Longitud of ascending node
                 const W = Number(results.data[i]["Orbit Rotation_X [Rad]"]); //Argument of periapsis
                 const A = Number(results.data[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
-                const EcRadius = 9// Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
+                const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
                 const NAM = results.data[i]["Name"]; //Name
-                const textureUrl = "./../textures/jupiter.jpg" //results.data[i]["TextureFile"]; //Texture image of planet
-                scene.add(CreatePlanet(0,0,0,EC,IN,OM,W,A*UA,EcRadius * EarthScale,NAM,0x4E4E4E,0.5,textureUrl));
+                const textureUrl = results.data[i]["TextureMap"]; //Texture image of planet
+                
+                //const texturePlanet = new THREE.TextureLoader().load(textureUrl);
+                    var PlanetMaterial;
+                    //PlanetMaterial = new THREE.MeshStandardMaterial( {map: texturePlanet} );
+                    
+                    loader.load(textureUrl, function ( texture ) {
+                        // Create the material when the texture is loaded
+                                var tex = texture.clone();
+                                tex.needsUpdate = true;
+                                PlanetMaterial = new THREE.MeshStandardMaterial( {
+                                    map: tex
+                                } );
+                                scene.add(CreatePlanet( EC,IN,OM,W,A*UA,EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial ));
+                            },
+                            undefined,
+                            function ( err ) {
+                                console.error( 'An error happened.' + err);
+                            }
+                        );
                 }
         }
         }); 
@@ -446,48 +486,51 @@ function CreateOsculOrbit(X,Y,Z,EC,IN,OM,W,A,Name){
   return oscul;
   }
 
-export function CreatePlanet(X,Y,Z,EC,IN,OM,W,A,Radius,Name,Color,t,TextureUrl){
+
+function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial){
  
-    //osculator orbit
+ //osculator orbit
+ const B = A * Math.sqrt( 1 - Math.pow( EC , 2 ) );
+ const f = A * -EC;
+
     const Orbit_Line = new THREE.EllipseCurve(
-      -EC * A, 0,          // ax, aY (center at focus)
-      A, A * Math.sqrt( 1 - Math.pow( EC , 2 ) ), // xRadius (semieje mayor), yRadius (semieje menor)
-      0,  2 * Math.PI,  // aStartAngle, aEndAngle
-      false,            // aClockwise
-      0//W  - 90 / 180* Math.PI // aRotation argument of periapsis
-      );
+        f,  0,            // ax, aY
+        A, B, // xRadius (semieje menor), yRadius (semieje mayor)
+        0,  2 * Math.PI,  // aStartAngle, aEndAngle
+        false,            // aClockwise
+        0                 // aRotation
+    );
   
   var points = Orbit_Line.getPoints( 5000 );
   var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
   
-  var materialOrbit = new THREE.LineBasicMaterial( { color : Color } );
+  var materialOrbit = new THREE.LineBasicMaterial( { color : OrbitColor } );
   
   // Create the final object to add to the scene
   var oscul = new THREE.Line( geometryOrbit, materialOrbit );
   oscul.name = "OrbitOf" + Name;
-  oscul.rotation.x = 90 / 180 * Math.PI ;
-  oscul.rotation.z = -W - OM ; //- 90 / 180* Math.PI // aRotation argument of periapsis
-  oscul.rotateOnAxis(new THREE.Vector3(Math.cos(OM),Math.sin(OM),0),1 * IN); //Inclinación al rededor del eje de nodos
   
-  //var Group = new THREE.Group();
-  oscul.position.x  = X;
-  oscul.position.z  = Y;
-  oscul.position.y  = Z;
   
   const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 300, 300);
-  const texturePlanet = new THREE.TextureLoader().load(TextureUrl);
-  const materialPlanet = new THREE.MeshStandardMaterial({map : texturePlanet});
-  var Planet = new THREE.Mesh(geometryPlanet, materialPlanet);
+
+  const Planet = new THREE.Mesh(geometryPlanet, PlanetMaterial);
+  
   const r = Orbit_Line.getPoint(t);
   Planet.position.set(r.x,r.y,r.z);
+  Planet.rotation.x = -90 / 180 * Math.PI ;
+  Planet.rotation.y = 180 / 180 * Math.PI ;
   Planet.name = Name;
-  Planet.add(oscul)
-  //Group.add(oscul);
-  //Group.add(Planet);
-  //Group.name = Planet.name;
 
-  return Planet;
-  }
+  const Group = new THREE.Group();
+  Group.add(Planet)
+  Group.add(oscul);
+
+  Group.rotation.x = 90 / 180 * Math.PI ;
+  Group.rotation.z = -W - OM ; //- 90 / 180* Math.PI // aRotation argument of periapsis
+  Group.rotateOnAxis(new THREE.Vector3(Math.cos(OM),Math.sin(OM),0),IN); //Inclinación al rededor del eje de nodos
+
+return Group;       
+}
 
 
 function load_papa_parse()

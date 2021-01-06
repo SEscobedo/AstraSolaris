@@ -75,11 +75,12 @@ let camera, scene, renderer, cameraControls, controls,
 
         //Lines
         //CreateOrbits();
-        MC.CreateOrbits(UA,scene);
+        //MC.CreateOrbits(UA,scene);
         
         //Agregar planetas
-        CreatePlanets();
-        //MC.CreatePlanets(escala,UA,scene);
+        //CreatePlanets();
+        MC.CreateSun(escala,scene);
+        MC.CreatePlanets(escala,UA,scene);
 
         //Agregar Estrellas
         MC.AddStars(UA, scene);
@@ -104,14 +105,14 @@ let camera, scene, renderer, cameraControls, controls,
         const buttonSol = document.getElementById( "Sol");
         buttonSol.addEventListener( 'click', function () {
 
-            GoPlanet('Sol');
+            GoPlanet('Sun');
 
         }, false );
 
         const buttonMer = document.getElementById( "Mercurio");        
         buttonMer.addEventListener( 'click', function () {
             
-            GoPlanet('Mercurio');
+            GoPlanet('Mercury');
 
         }, false );
 
@@ -125,21 +126,21 @@ let camera, scene, renderer, cameraControls, controls,
         const buttonTi = document.getElementById( "Tierra");        
         buttonTi.addEventListener( 'click', function () {
             
-            GoPlanet('Tierra');
+            GoPlanet('Earth');
 
         }, false );
 
         const buttonLu = document.getElementById( "Luna");        
         buttonLu.addEventListener( 'click', function () {
             
-            GoPlanet('Luna');
+            GoPlanet('Moon');
 
         }, false );
 
         const buttonMar = document.getElementById( "Marte");        
         buttonMar.addEventListener( 'click', function () {
             
-            GoPlanet('Marte');
+            GoPlanet('Mars');
 
         }, false );
 
@@ -153,21 +154,21 @@ let camera, scene, renderer, cameraControls, controls,
         const buttonSat = document.getElementById( "Saturno");        
         buttonSat.addEventListener( 'click', function () {
             
-            GoPlanet('Saturno');
+            GoPlanet('Saturn');
 
         }, false );
 
         const buttonUr = document.getElementById( "Urano");        
         buttonUr.addEventListener( 'click', function () {
             
-            GoPlanet('Urano');
+            GoPlanet('Uranus');
 
         }, false );
 
         const buttonNe = document.getElementById( "Neptuno");        
         buttonNe.addEventListener( 'click', function () {
             
-            GoPlanet('Neptuno');
+            GoPlanet('Neptune');
 
         }, false );
 
@@ -504,7 +505,7 @@ function CreatePlanets(){
     // Create mesh with geometry and material
     sun = new THREE.Mesh(geometrySun, materialSun);
     crown = new THREE.Mesh(geometryCrown, materialCrown);
-    sun.name = 'Sol';
+    sun.name = 'sun';
     
     mercury = new THREE.Mesh(geometryMercury, materialMercury);
     mercury.name = 'Mercurio';
@@ -589,8 +590,8 @@ function CreatePlanets(){
 function SolarSystemAnimate(){
     // Rotate cube (Change values to change speed)
     
-    //scene.getObjectByName("sun").rotation.y += 0.0005;
-    crown.lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
+    scene.getObjectByName("Sun").rotation.y += 0.0005;
+    scene.getObjectByName("crown").lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
     
     //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
     //venus.rotation.y -= 0.001;
@@ -603,7 +604,7 @@ function SolarSystemAnimate(){
     //mars.rotation.y += 0.001;
     //marsAtmos.rotation.y += 0.001;
     
-    //jupiter.rotation.y += 0.001;
+    //scene.getObjectByName("Jupiter").rotation.y += 0.001;
     //saturn.rotation.y += 0.001;
     //ring.rotation.x += -0.01;
     
@@ -618,34 +619,34 @@ export function CommandExecute(COMMAND){
     var response;
 
     if(COMMAND == "goto earth"){
-        GoPlanet('Tierra');
+        GoPlanet('Earth');
       response = "\r\n Camera relocated at earth."; 
     } else if ( COMMAND == "goto moon") {
-        GoPlanet('Luna');
+        GoPlanet('Moon');
         response = "\r\n Camera relocated at Moon."; 
     } else if ( COMMAND == "goto sun") {
-        GoPlanet('Sol');
+        GoPlanet('Sun');
         response = "\r\n Camera relocated at Sun.";  
     } else if ( COMMAND == "goto mercury") {
-      GoPlanet('Mercurio');
+      GoPlanet('Mercury');
       response = "\r\n Camera relocated at Mercury.";
     } else if ( COMMAND == "goto venus") {
       GoPlanet('Venus');
       response = "\r\n Camera relocated at Venus.";  
     } else if ( COMMAND == "goto mars") {
-        GoPlanet('Marte');
+        GoPlanet('Mars');
         response = "\r\n Camera relocated at Mars.";  
     } else if ( COMMAND == "goto jupiter") {
         GoPlanet('Jupiter');
         response = "\r\n Camera relocated at Jupiter."; 
     } else if ( COMMAND == "goto saturn") {
-        GoPlanet('Saturno')
+        GoPlanet('Saturn')
         response = "\r\n Camera relocated at Saturn.";  
     } else if ( COMMAND == "goto uranus") {
-        GoPlanet('Urano')
+        GoPlanet('Uranus')
         response = "\r\n Camera relocated at Uranus.";
     } else if ( COMMAND == "goto neptune") {
-        GoPlanet('Neptuno')
+        GoPlanet('Neptune')
         response = "\r\n Camera relocated at Neptune."; 
 
     } else if ( COMMAND == "approach") {
@@ -738,8 +739,11 @@ export function CommandExecute(COMMAND){
 
 function GoPlanet(planeta){
     const object = scene.getObjectByName(planeta);
+    var pos = new THREE.Vector3(); 
+    object.getWorldPosition(pos);
 
-    if (planeta == 'Sol') {
+    //console.log(object);
+    if (planeta == 'Sun') {
         cameraControls.setTarget(
             object.position.x, 
             object.position.y, 
@@ -758,21 +762,22 @@ function GoPlanet(planeta){
     else{
     
     cameraControls.setTarget(
-        object.position.x, 
-        object.position.y, 
-        object.position.z, 
+        pos.x, 
+        pos.y, 
+        pos.z, 
         true
     ); 
     
     cameraControls.setLookAt( 
-        object.position.x + 20 * escala, 
-        object.position.y, 
-        object.position.z - 20 * escala, 
-        object.position.x, 
-        object.position.y, 
-        object.position.z, 
+        pos.x + 20 * escala, 
+        pos.y, 
+        pos.z - 20 * escala, 
+        pos.x, 
+        pos.y, 
+        pos.z, 
         true);
     }
+
     /*if (planeta == 'Sol') {
         cameraControls.setTarget(
             sun.position.x, 
