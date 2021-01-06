@@ -85,18 +85,42 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                 const NAM = results.data[i]["Name"]; //Name
                 const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                 
+                var NormalMapUrl, textureNormal, SpecularMapUrl, textureSpecular, claudsTextureUrl, textureClouds
+                if(NAM == "Earth"){
+                    NormalMapUrl = results.data[i]["NormalMap"]; //Normal map of planet surface
+                    textureNormal = new THREE.TextureLoader().load(NormalMapUrl);
+                    SpecularMapUrl = results.data[i]["SpecularMap"]; //Normal map of planet surface
+                    textureSpecular = new THREE.TextureLoader().load(SpecularMapUrl);
+                    claudsTextureUrl = results.data[i]["claudsTexture"]; //Normal map of planet surface
+                    textureClouds = new THREE.TextureLoader().load(claudsTextureUrl);
+                }
+               
+
+                
+                
                 //const texturePlanet = new THREE.TextureLoader().load(textureUrl);
                     var PlanetMaterial;
                     //PlanetMaterial = new THREE.MeshStandardMaterial( {map: texturePlanet} );
                     
                     loader.load(textureUrl, function ( texture ) {
-                        // Create the material when the texture is loaded
-                                var tex = texture.clone();
-                                tex.needsUpdate = true;
-                                PlanetMaterial = new THREE.MeshStandardMaterial( {
-                                    map: tex
-                                } );
-                                scene.add(CreatePlanet( EC,IN,OM,W,A*UA,EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial ));
+                        // Create the material when the texture is loaded                                
+                                texture.needsUpdate = true;
+
+                                if(NAM != "Earth"){ 
+                                    PlanetMaterial = new THREE.MeshStandardMaterial( {map: texture} );
+                                    scene.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial, false));
+                                }
+                                else{
+            
+                                    const AtmosMaterial =  new THREE.MeshStandardMaterial({color:0xFFFFFF, alphaMap : textureClouds,opacity: 1,transparent: true});
+                                    PlanetMaterial = new THREE.MeshStandardMaterial( {map : texture,
+                                        normalMap:textureNormal,
+                                        normalScale: new THREE.Vector2(0.05,0),
+                                        roughnessMap:textureSpecular,
+                                        roughness:0.5});
+                                        scene.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial, true, AtmosMaterial));
+                                }
+                                
                             },
                             undefined,
                             function ( err ) {
@@ -106,6 +130,16 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                 }
         }
         }); 
+ }
+ 
+ function CreateRing(SaturnScale){
+    const textureRing = new THREE.TextureLoader().load('textures/saturn_rings_black2.png');
+    const materialRing = new THREE.MeshBasicMaterial({map : textureRing,transparent:true});
+    const geometryRing = new THREE.CylinderBufferGeometry((2.326 * SaturnScale),(2.326 * SaturnScale),0.001,95);
+    const ring = new THREE.Mesh(geometryRing, materialRing);
+    textureRing.anisotropy = 16;
+    ring.position.set(0,0,0);
+    return ring;
  }
 
 export function CreateOrbits(UA,scene){
@@ -487,7 +521,7 @@ function CreateOsculOrbit(X,Y,Z,EC,IN,OM,W,A,Name){
   }
 
 
-function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial){
+function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmosphere, AtmosMaterial = undefined){
  
  //osculator orbit
  const B = A * Math.sqrt( 1 - Math.pow( EC , 2 ) );
@@ -521,14 +555,41 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial){
   Planet.rotation.y = 180 / 180 * Math.PI ;
   Planet.name = Name;
 
+  if (Name == "Saturn"){
+   const ring = CreateRing(Radius);
+   Planet.add(ring);
+  }
+
+  else if(Name == "Earth"){
+    //Add earth's moon
+    const textureMoon =  new THREE.TextureLoader().load('textures/moon.jpg');
+    const textureMoonNormal =  new THREE.TextureLoader().load('textures/moon_normal.jpg');
+    const materialMoon = new THREE.MeshStandardMaterial({map : textureMoon,
+    normalMap:textureMoonNormal,
+    normalScale: new THREE.Vector2(0.05,0.05)});
+    var MoonSystem = CreatePlanet(0.0549,0.08979719,0,0,60.268165113,0.2725,"Moon",0x3E4E4E, 0.7, materialMoon, false)
+    Planet.add(MoonSystem);
+  }
+  Planet.UserData = Radius;
+
   const Group = new THREE.Group();
-  Group.add(Planet)
+  Group.add(Planet);
   Group.add(oscul);
+
+  if (Atmosphere === true){
+    const geometryAtmos = new THREE.SphereBufferGeometry( Radius + 0.001 * Radius, 100, 100 );
+    const Atmos = new THREE.Mesh(geometryAtmos, AtmosMaterial);
+    Atmos.position.set(Planet.position.x,Planet.position.y,Planet.position.z);
+    Atmos.rotation.x = -90 / 180 * Math.PI ;
+    Atmos.rotation.y = 180 / 180 * Math.PI ;
+    Atmos.name = "Atmos" + Name;
+    Group.add(Atmos);
+  }
 
   Group.rotation.x = 90 / 180 * Math.PI ;
   Group.rotation.z = -W - OM ; //- 90 / 180* Math.PI // aRotation argument of periapsis
   Group.rotateOnAxis(new THREE.Vector3(Math.cos(OM),Math.sin(OM),0),IN); //Inclinación al rededor del eje de nodos
-
+  Group.name = "System" + Planet.name
 return Group;       
 }
 
