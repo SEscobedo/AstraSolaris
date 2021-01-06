@@ -1,9 +1,9 @@
 Name,Relative Ecuatorial Radius,Relative Polar Radius,"Orbit semimajor axis [UA]",Inclination [Rad],Eccentricity,"Orbit Rotation_X [Rad]","Orbit Rotation_Y [Rad]",Mesh [dataset],TextureFile,NormalMap,SpecularMap,claudsTexture
-Mercury,0.383,0.384,"2.768",0.1222580452,0.20563593,"1.3518700794","0.84354677449",,textures/8k_mercury.jpg,"","",""
-Venus,0.949,0.952,"0.72333199",0.05924886665,0.00677323,"2.29568357595","1.3383305132",,textures/4k_venus_atmosphere.jpg,"","",""
+Mercury,0.383,0.384,"0.38709893",0.1222580452,0.20563593,"1.3518700794","0.84354677449",,textures/8k_mercury.jpg,,,
+Venus,0.949,0.952,"0.72333199",0.05924886665,0.00677323,"2.29568357595","1.3383305132",,textures/4k_venus_atmosphere.jpg,,,
 Earth,1,0.99665,"1.00000011",8.72664626e-7,0.01671022,"1.79676742117","-0.19653524388",,textures/earth_blue_NASA_2.jpg,textures/earth_normal_2048.jpg,textures/earth_specular_2048_g.jpg,textures/8k_earth_clouds.jpg
-Mars,0.532,0.531,"1.52366231",0.03229923767,0.09341233,"5.86501907915","0.86530876133",,textures/mars.jpg,"","",""
-Jupiter,11.209,10.47,"5.20336301",0.0227817827,0.04839266,"0.25750325984","1.75503590062",,textures/jupiter.jpg,"","",""
-Saturn,9.449,8.552,"9.53707032",0.04336200713,0.05415060,"1.613241687","1.98470185703",,textures/8k_saturn.jpg,"","",""
-Uranus,4.007,3.929,"19.19126393",0.01343659178,0.04716771,"2.98388889116","1.2955558094",,textures/2k_uranus.jpg,"","",""
-Neptune,3.883,3.829,"30.06896348",0.03087784153,0.00858587,"0.78489812656","2.29897718679",,textures/2k_neptune.jpg,"","",""
+Mars,0.532,0.531,"1.52366231",0.03229923767,0.09341233,"5.86501907915","0.86530876133",,textures/mars.jpg,,,
+Jupiter,11.209,10.47,"5.20336301",0.0227817827,0.04839266,"0.25750325984","1.75503590062",,textures/jupiter.jpg,,,
+Saturn,9.449,8.552,"9.53707032",0.04336200713,0.05415060,"1.613241687","1.98470185703",,textures/8k_saturn.jpg,,,
+Uranus,4.007,3.929,"19.19126393",0.01343659178,0.04716771,"2.98388889116","1.2955558094",,textures/2k_uranus.jpg,,,
+Neptune,3.883,3.829,"30.06896348",0.03087784153,0.00858587,"0.78489812656","2.29897718679",,textures/2k_neptune.jpg,,,

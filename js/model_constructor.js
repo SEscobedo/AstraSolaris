@@ -83,7 +83,7 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                 const A = Number(results.data[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
                 const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
                 const NAM = results.data[i]["Name"]; //Name
-                const textureUrl = results.data[i]["TextureMap"]; //Texture image of planet
+                const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                 
                 //const texturePlanet = new THREE.TextureLoader().load(textureUrl);
                     var PlanetMaterial;
