@@ -3,10 +3,8 @@ import CameraControls from './../node_modules/camera-controls/dist/camera-contro
 import * as MC from './model_constructor.js';
 
 
+
 let camera, scene, renderer, cameraControls, controls,
- mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
- sun, crown,
- Orbit_mercury, Orbit_venus, Orbit_earth, Orbit_mars, Orbit_jupiter, Orbit_saturn, Orbit_uranus, Orbit_neptune, Orbit_moon,
  escala, UA;
  var tm = new Date();
  const clock = new THREE.Clock();
@@ -38,18 +36,8 @@ let camera, scene, renderer, cameraControls, controls,
 		0.1,
 		60000*UA
         );
-        camera.position.set(0,UA,10 * UA);
+        camera.position.set(0,UA,3 * UA);
         
-        //LUCES
-        const light = new THREE.PointLight( {color:0xFFFFFF, decay: 2, intensity: 1} );
-        light.position.set( 0, 0, 0 );
-        light.castShadow = true;
-        //Set up shadow properties for the light
-        light.shadow.mapSize.width = 5;  // default
-        light.shadow.mapSize.height = 5; // default
-        light.shadow.camera.near = 0.5;       // default
-        light.shadow.camera.far = UA      // default
-        scene.add( light );
 
         //screenshots
         var saveLink = document.createElement('div');
@@ -72,7 +60,7 @@ let camera, scene, renderer, cameraControls, controls,
         renderer.setPixelRatio( window.devicePixelRatio );
         document.body.appendChild(renderer.domElement);
 
-
+        //CRATE SOLAR SYSTEM MODEL
         //Add stars and sun
         MC.AddStars(UA, scene);
         MC.CreateSun(escala,scene);
@@ -80,13 +68,14 @@ let camera, scene, renderer, cameraControls, controls,
         //Add planets
         MC.CreatePlanets(escala,UA,scene);
 
+        //camera controls
         cameraControls = new CameraControls( camera, renderer.domElement );
         cameraControls.dampingFactor = 0.05;
         cameraControls.draggingDampingFactor=0.25;
         cameraControls.verticalDragToForward = true;
 
 
-        //Menu
+        //Travel Menu
         const buttonSol = document.getElementById( "Sol");
         buttonSol.addEventListener( 'click', function () {
 
@@ -167,8 +156,7 @@ function animate() {
         const updated = cameraControls.update( delta );
         
         requestAnimationFrame(animate);
-        SolarSystemAnimate();
-        
+        MC.SolarSystemUpdate(scene, camera);
         renderer.render(scene, camera);
         
 }
@@ -202,92 +190,90 @@ var saveFile = function (strData, filename) {
     }
 }    
     
-    
-function SolarSystemAnimate(){
-    // Rotate cube (Change values to change speed)
-    
-    scene.getObjectByName("Sun").rotation.y += 0.0005;
-    scene.getObjectByName("crown").lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
-    
-    //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
-    //venus.rotation.y -= 0.001;
-   
-    const desfase = 3.2; //desfase resepcto a la hora local
-    //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
-    //earthAtmos.rotation.y += 0.00005;
-    const earth = scene.getObjectByName("Earth");
-    
-    if (earth != undefined) {
-        const moon = scene.getObjectByName("Moon");
-        moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
-        moon.rotation.y = -80 / 180 * Math.PI ;
-    }
-    
-    //mars.rotation.y += 0.001;
-    //marsAtmos.rotation.y += 0.001;
-    
-    //scene.getObjectByName("Jupiter").rotation.y += 0.001;
-    //saturn.rotation.y += 0.001;
-    //ring.rotation.x += -0.01;
-    
-    //uranus.rotation.y += 0.001;
-    //neptune.rotation.y += 0.001;
-    
-}
-    
+
 //terminal & commands
 
 export function CommandExecute(COMMAND){
     var response, curr_line;
 
-    if(COMMAND == "goto earth"){
-        GoPlanet('Earth');
-      response = "\r\n Camera relocated at earth."; 
-    } else if ( COMMAND == "goto moon") {
-        GoPlanet('Moon');
-        response = "\r\n Camera relocated at Moon."; 
-    } else if ( COMMAND == "goto sun") {
-        GoPlanet('Sun');
-        response = "\r\n Camera relocated at Sun.";  
-    } else if ( COMMAND == "goto mercury") {
-      GoPlanet('Mercury');
-      response = "\r\n Camera relocated at Mercury.";
-    } else if ( COMMAND == "goto venus") {
-      GoPlanet('Venus');
-      response = "\r\n Camera relocated at Venus.";  
-    } else if ( COMMAND == "goto mars") {
-        GoPlanet('Mars');
-        response = "\r\n Camera relocated at Mars.";  
-    } else if ( COMMAND == "goto jupiter") {
-        GoPlanet('Jupiter');
-        response = "\r\n Camera relocated at Jupiter."; 
-    } else if ( COMMAND == "goto saturn") {
-        GoPlanet('Saturn')
-        response = "\r\n Camera relocated at Saturn.";  
-    } else if ( COMMAND == "goto uranus") {
-        GoPlanet('Uranus')
-        response = "\r\n Camera relocated at Uranus.";
-    } else if ( COMMAND == "goto neptune") {
-        GoPlanet('Neptune')
-        response = "\r\n Camera relocated at Neptune."; 
+    if ( COMMAND.match(/goto .*/)) {
+        
+        // find target
+        const SplitArray = COMMAND.split(" ");
+        var Target;
+        if (SplitArray.length > 1) {
+            Target = scene.getObjectByName(SplitArray[1]);
+            if (Target != undefined){
+                GoPlanet(Target, true);
+                response = "\r\n Traveling to " + Target.name; 
+            }
+            else{
+                response = "\r\n Object not found."; 
+            }
+        }
+
+    } else if ( COMMAND.match(/jump to .*/)) {
+        
+        // find target
+        const SplitArray = COMMAND.split(" ");
+        var Target;
+        if (SplitArray.length > 2) {
+            Target = scene.getObjectByName(SplitArray[2]);
+            if (Target != undefined){
+                GoPlanet(Target, false);
+                response = "\r\n Jumping to " + Target.name;
+            }
+            else{
+                response = "\r\n Object not found."; 
+            }
+        }
+
+    } else if ( COMMAND.match(/target .*/)) {
+        
+            // find target
+            const SplitArray = COMMAND.split(" ");
+            var Target;
+            if (SplitArray.length > 1) {
+                Target = scene.getObjectByName(SplitArray[1]);
+                if (Target != undefined){
+                    var pos =  new THREE.Vector3();
+                    Target.getWorldPosition(pos);
+                    cameraControls.setTarget(pos.x,pos.y,pos.z, true)
+                    response = "\r\n Target set to " + Target.name; 
+                }
+                else{
+                    response = "\r\n Target not found."; 
+                }
+            }
 
     } else if ( COMMAND == "approach") {
-        //camera.position.z += 0.5 * escala;
+        
         var tar = new THREE.Vector3();
         cameraControls.getTarget( tar );
         const l = tar.distanceTo(camera.position)/6;
         cameraControls.dolly(l, true );
-        response = "\r\n Apporaching target.";    
+        response = "\r\n Apporaching target.";   
+
+    } else if ( COMMAND == "away") {
+        
+        var tar = new THREE.Vector3();
+        cameraControls.getTarget( tar );
+        const l = tar.distanceTo(camera.position)/6;
+        cameraControls.dolly(-l, true );
+        response = "\r\n Away from target.";    
+
     } else if ( COMMAND == "zoom") {
         cameraControls.zoom( camera.zoom / 2, true )
-        response = "\r\n zoom in.";    
-    } else if ( COMMAND == "zoom out") {
+        response = "\r\n zoom in.";  
+
+    } else if ( COMMAND == "-zoom") {
         cameraControls.zoom( -camera.zoom / 2, true )
         response = "\r\n zoom out.";    
       
     } else if ( COMMAND == "around") {
         cameraControls.rotate( Math.PI/2, 0, true )
         response = "\r\n Camera rotation around target enabled."; 
+
     } else if ( COMMAND == "-around") {
         cameraControls.rotate( -Math.PI/2, 0, true )
         response = "\r\n Camera rotation around target enabled."; 
@@ -299,6 +285,7 @@ export function CommandExecute(COMMAND){
       
     } else if ( COMMAND == "filters") {
         response = "\r\n (1) solar filter";  
+
     } else if ( COMMAND == "solar filter on") {
         //cargar textura solar
         const textureSun = new THREE.TextureLoader().load('textures/heliographic_negative_bw2.jpg');
@@ -309,6 +296,7 @@ export function CommandExecute(COMMAND){
         response = "\r\n solar filter applied. STEREO Heliographic data.";  
       
     } else if ( COMMAND == "solar filter off") {
+
     scene.getObjectByName('Sun').material =  new THREE.MeshStandardMaterial({color:0xFFFFFF, emissive: 0xFFFFFF, emissiveIntensity:1});
     //mostrar la corona
     scene.getObjectByName('crown').material.opacity = 1;
@@ -331,6 +319,14 @@ export function CommandExecute(COMMAND){
     } else if ( COMMAND == "show venus atmosphere") {
         scene.getObjectByName('Venus').material = new THREE.MeshStandardMaterial({map:new THREE.TextureLoader().load('textures/4k_venus_atmosphere.jpg')});
         response = "\r\n Venus atmosphere shown";  
+
+    } else if ( COMMAND == "hide lens flares") {
+        scene.getObjectByName('LensFlare').visible = false;
+        response = "\r\n Lens flares off";  
+
+    } else if ( COMMAND == "show lens flares") {
+        scene.getObjectByName('LensFlare').visible = true;
+        response = "\r\n Lens flares on";  
 
     } else if ( COMMAND == "clear") {
       curr_line = "";
@@ -371,51 +367,25 @@ export function CommandExecute(COMMAND){
     return response;
 }
 
-function GoPlanet(planeta){
-    const object = scene.getObjectByName(planeta);
-    var pos = new THREE.Vector3(); 
-    object.getWorldPosition(pos);
+function GoPlanet(object, transition = true){
 
-    //console.log(object);
-    if (planeta == 'Sun') {
+        var pos = new THREE.Vector3(); 
+        object.getWorldPosition(pos);
+        
         cameraControls.setTarget(
-            object.position.x, 
-            object.position.y, 
-            object.position.z, 
-            true
+            pos.x, 
+            pos.y, 
+            pos.z, 
+            transition
         );
-        cameraControls.setLookAt( 
-            object.position.x + 0.08 * UA, 
-            object.position.y, 
-            object.position.z - 0.08 *UA, 
-            object.position.x, 
-            object.position.y, 
-            object.position.z, 
-            true);
-    }
-    else{
-    
-    cameraControls.setTarget(
-        pos.x, 
-        pos.y, 
-        pos.z, 
-        true
-    ); 
-    
-    cameraControls.setLookAt( 
-        pos.x + object.UserData * 1.9 + escala * 2.5, 
-        pos.y, 
-        pos.z - (object.UserData * 1.9 + escala * 2.5), 
-        pos.x, 
-        pos.y, 
-        pos.z, 
-        true);
-    }
+        var d = object.UserData;
+        if (object.name == 'Sun') d = d * 5;
+        const l = pos.distanceTo(camera.position) - (d * 2.5 + escala * 2.5);
+        cameraControls.dolly(l, transition );
 
 }
 
 //window
-
 function onWindowResize() {
     // Camera frustum aspect ratio
     camera.aspect = window.innerWidth / window.innerHeight;

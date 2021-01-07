@@ -45,26 +45,28 @@
             <h3>Movimiento de cámara</h3>
              <ul>
                 
-                <li> <b>goto [objeto]</b>    Coloca la cámara en una posición cercana a [objeto] de manera tal que pueda ser visto en primer plano.<br>
-                alias: 'go to' <br>
-                Ejemplo: <i>goto earth</i> mueve la cámara hacia una región próxima a la tierra, y apuntando hacia ella.</li>
+                <li> <b>goto [objeto]</b> Mueve la cámara de manera suave y continua desde la posición actual hasta una posición cercana a [objeto]. <br>
 
-                <li><b>*travel to [objeto]</b>    Mueve la cámara de manera suave y continua desde la posición actual hasta una posición cercana a [objeto]. </li>
+                Ejemplo: <i>goto Earth</i> mueve la cámara hacia una región próxima a la tierra, y apuntando hacia ella.</li>
 
-                <li> <b>around</b>  Mueve la cámara al rededor del objeto en una órbita circular. El valor por default interno es 0.2</li>
-                
-                <li> <b>stop_around</b>   Detiene el movimiento de la cámara generado por el comando <i>arround</i>. alias: 'stop around' </li>
+                <li><b>jump to [objeto]</b>    Coloca la cámara en una posición cercana a [objeto] de manera tal que pueda ser visto en primer plano. </li>
+                <li><b>target [objeto]</b>    Define al [objeto] como obejivo de la cámara y apunta hacia él. </li>
 
-                <li><b>approach</b>  mueve la cámara hacia el pivote. La distancia es proporcional al tamaño del objeto pitvote.</li> 
+                <li> <b>around</b>  Mueve la cámara al rededor del objeto 45 grados en una órbita circular (hacia la derecha o en sentido anti-horario).</li>
+                <li> <b>-around</b>  Mueve la cámara al rededor del objeto -45 grados en una órbita circular (hacia la izquierda o en sentido horario).</li>
 
-                <li><b>*away</b>  aleja la cámara del pivote. La distancia es proporcional al tamaño del pivote.</li>
+                <li><b>approach</b>  mueve la cámara hacia el objetivo. El avance es proporcional a la distancia desde la cámara hasta el objetivo.</li> 
+
+                <li><b>away</b>  aleja la cámara del objetivo. El avance es proporcional a la distancia desde la cámara hasta el objetivo.</li>
+                <li><b>zoom</b>  hace un acercamiento al objetivo sin modificar la posición del observador (zoom in).</li>
+                <li><b>-zoom</b>  hace un alejamiento al objetivo sin modificar la posición del observador (zoom out).</li>
              </ul>
         </p> 
 
         <p>
             <h3>Información y visualización</h3>
             <ul>
-                <li><b>hide [object]</b> Oculta el objeto [object] <br> Ejemplo: <i>hide orbits</i> oculta las órbitas planetarias.</li>
+                <li><b>hide [object]</b>    Oculta el objeto [object] <br> Ejemplo: <i>hide orbits</i> oculta las órbitas planetarias.</li>
                 <li><b>show [object]</b>    Muestra el objeto [object] <br>Ejemplo: <i>show orbits</i> muestra las órbitas planetarias, si estaban ocultas.</li>
 
                 <li><b>solar filter on</b>   Activa el filtro solar. Nota: este filtro sólo afecta al sol</li>
@@ -79,6 +81,9 @@
                 <li><b>*bib</b> Muestra la biblioigrafía referente al objeto seleccionado.</li>
                 <li><b>*links</b> Muestra la lista de vínculos relacionados con el objeto selecionado.</li>
                 <li><b>*visual_modes</b> Muestra los modos de visualización disponibles</li>
+
+                <li><b>show lens flares</b>  Activa la visualización del reflejo de lente (lens flare) en la escena.</li>
+                <li><b>hide lens flares</b>  Desactiva la visualización del reflejo de lente (lens flares) en la escena.</li>
 
             </ul>
         </p>

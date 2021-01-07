@@ -1,8 +1,9 @@
 //import { XRHitTestTrackableType } from 'three';
 import * as THREE from './../node_modules/three/build/three.module.js';
+import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
 
 let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
- sun, crown, Orbit_mercury, Orbit_venus, Orbit_earth, Orbit_mars, Orbit_jupiter, Orbit_saturn, Orbit_uranus, Orbit_neptune, Orbit_moon;
+ Orbit_mercury, Orbit_venus, Orbit_earth, Orbit_mars, Orbit_jupiter, Orbit_saturn, Orbit_uranus, Orbit_neptune, Orbit_moon;
 
  var tm = new Date();
  var JulianDateIndex;
@@ -49,15 +50,43 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
     //const materialSun = new THREE.MeshStandardMaterial({emissiveMap : textureSun,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialSun = new THREE.MeshStandardMaterial({color:0xFFFFFF,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialCrown = new THREE.MeshStandardMaterial({emissiveMap : textureCrown, alphaMap:textureCrown, emissive: 0xFFFFFF,emissiveIntensity:1,transparent:true,opacity:1});
-    sun = new THREE.Mesh(geometrySun, materialSun);
-    crown = new THREE.Mesh(geometryCrown, materialCrown);
+    const sun = new THREE.Mesh(geometrySun, materialSun);
+    const crown = new THREE.Mesh(geometryCrown, materialCrown);
     sun.name = 'Sun';
+    sun.UserData = 109.076 * EarthScale;
     crown.name = 'crown';
     sun.position.set(0,0,0);
-    crown.position.set(0,0,0);
+    sun.add(crown); 
 
+     //Sunligth
+     const sunlight = new THREE.PointLight( {color:0xFFFFFF, decay: 2, intensity: 1} );
+     sunlight.position.set( 0, 0, 0 );
+     sunlight.castShadow = true;
+     //Set up shadow properties for the light
+     sunlight.shadow.mapSize.width = 5;  // default
+     sunlight.shadow.mapSize.height = 5; // default
+     sunlight.shadow.camera.near = 0.5;       // default
+     sunlight.shadow.camera.far = 1000 * EarthScale ; // default
+     sunlight.name = 'sunligth';
+     sun.add( sunlight );
+
+     // lensflares
+     const textureLoader = new THREE.TextureLoader();
+
+     //const textureFlare0 = textureLoader.load( 'textures/lensflare/lensflare0.png' );
+     const textureFlare3 = textureLoader.load( 'textures/lensflare/lensflare3.png' );
+
+
+     const lensflare = new Lensflare();
+                 //lensflare.addElement( new LensflareElement( textureFlare0, 700, 0, light.color ) );
+                 lensflare.addElement( new LensflareElement( textureFlare3, 60, 0.6 ) );
+                 lensflare.addElement( new LensflareElement( textureFlare3, 70, 0.7 ) );
+                 lensflare.addElement( new LensflareElement( textureFlare3, 120, 0.9 ) );
+                 lensflare.addElement( new LensflareElement( textureFlare3, 70, 1 ) );
+                 lensflare.name = 'LensFlare'
+                 lensflare.visible = false; //Default mode
+                 sunlight.add( lensflare );
     scene.add(sun);
-    scene.add(crown);
  }
 
  export function CreatePlanets(EarthScale,UA,scene){
@@ -593,6 +622,36 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmo
 return Group;       
 }
 
+export function SolarSystemUpdate(scene, camera){
+    // Rotate cube (Change values to change speed)
+        
+    scene.getObjectByName("Sun").rotation.y += 0.0005;
+    scene.getObjectByName("crown").lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
+
+    //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
+    //venus.rotation.y -= 0.001;
+
+    const desfase = 3.2; //desfase resepcto a la hora local
+    //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
+    //earthAtmos.rotation.y += 0.00005;
+    const earth = scene.getObjectByName("Earth");
+
+    if (earth != undefined) {
+        const moon = scene.getObjectByName("Moon");
+        moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
+        moon.rotation.y = -80 / 180 * Math.PI ;
+    }
+
+    //mars.rotation.y += 0.001;
+    //marsAtmos.rotation.y += 0.001;
+
+    //scene.getObjectByName("Jupiter").rotation.y += 0.001;
+    //saturn.rotation.y += 0.001;
+    //ring.rotation.x += -0.01;
+
+    //uranus.rotation.y += 0.001;
+    //neptune.rotation.y += 0.001;
+}
 
 function load_papa_parse()
 {
