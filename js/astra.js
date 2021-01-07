@@ -79,70 +79,70 @@ let camera, scene, renderer, cameraControls, controls,
         const buttonSol = document.getElementById( "Sol");
         buttonSol.addEventListener( 'click', function () {
 
-            GoPlanet('Sun');
+            GoPlanet(scene.getObjectByName('Sun'));
 
         }, false );
 
         const buttonMer = document.getElementById( "Mercurio");        
         buttonMer.addEventListener( 'click', function () {
             
-            GoPlanet('Mercury');
+            GoPlanet(scene.getObjectByName('Mercury'));
 
         }, false );
 
         const buttonVen = document.getElementById( "Venus");        
         buttonVen.addEventListener( 'click', function () {
             
-            GoPlanet('Venus');
+            GoPlanet(scene.getObjectByName('Venus'));
 
         }, false );
 
         const buttonTi = document.getElementById( "Tierra");        
         buttonTi.addEventListener( 'click', function () {
             
-            GoPlanet('Earth');
+            GoPlanet(scene.getObjectByName('Earth'));
 
         }, false );
 
         const buttonLu = document.getElementById( "Luna");        
         buttonLu.addEventListener( 'click', function () {
             
-            GoPlanet('Moon');
+            GoPlanet(scene.getObjectByName('Moon'));
 
         }, false );
 
         const buttonMar = document.getElementById( "Marte");        
         buttonMar.addEventListener( 'click', function () {
             
-            GoPlanet('Mars');
+            GoPlanet(scene.getObjectByName('Mars'));
 
         }, false );
 
         const buttonJup = document.getElementById( "Jupiter");        
         buttonJup.addEventListener( 'click', function () {
             
-            GoPlanet('Jupiter');
+            GoPlanet(scene.getObjectByName('Jupiter'));
 
         }, false );
 
         const buttonSat = document.getElementById( "Saturno");        
         buttonSat.addEventListener( 'click', function () {
             
-            GoPlanet('Saturn');
+            GoPlanet(scene.getObjectByName('Saturn'));
 
         }, false );
 
         const buttonUr = document.getElementById( "Urano");        
         buttonUr.addEventListener( 'click', function () {
             
-            GoPlanet('Uranus');
+            GoPlanet(scene.getObjectByName('Uranus'));
 
         }, false );
 
         const buttonNe = document.getElementById( "Neptuno");        
         buttonNe.addEventListener( 'click', function () {
             
-            GoPlanet('Neptune');
+            GoPlanet(scene.getObjectByName('Neptune'));
 
         }, false );
 
