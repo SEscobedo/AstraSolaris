@@ -328,6 +328,8 @@ export function CommandExecute(COMMAND){
         scene.getObjectByName('LensFlare').visible = true;
         response = "\r\n Lens flares on";  
 
+    
+
     } else if ( COMMAND == "clear") {
       curr_line = "";
     
@@ -357,7 +359,40 @@ export function CommandExecute(COMMAND){
         scene.getObjectByName('OrbitOfNeptune').visible = true;
         scene.getObjectByName('OrbitOfMoon').visible = true;
         
-        response = "\r\n orbits shown";  
+        response = "\r\n orbits shown"; 
+        
+    } else if ( COMMAND.match(/hide .*/)) {
+    
+        // find target
+        const SplitArray = COMMAND.split(" ");
+        var Object;
+        if (SplitArray.length > 1) {
+            Object = scene.getObjectByName(SplitArray[1]);
+            console.log(Object);
+            if (Object != undefined){
+                Object.visible = false;
+                response =  "\r\n" + Object.name + " hiden"; 
+            }
+            else{
+                response = "\r\n Object not found."; 
+            }
+        }
+
+    } else if ( COMMAND.match(/show .*/)) {
+    
+        // find target
+        const SplitArray = COMMAND.split(" ");
+        var Object;
+        if (SplitArray.length > 1) {
+            Object = scene.getObjectByName(SplitArray[1]);
+            if (Object != undefined){
+                Object.visible = true;
+                response =  "\r\n" + Object.name + " shown"; 
+            }
+            else{
+                response = "\r\n Object not found."; 
+            }
+        }
       
 
     } else {
