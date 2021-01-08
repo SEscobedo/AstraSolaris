@@ -171,6 +171,60 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
     return ring;
  }
 
+export function CreateMoons(EarthScale,UA,planet){
+//Import moon orbit parameters and properties
+    
+    const urlMoons = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/data/moons_run.csv";
+    Papa.parse(urlMoons, {
+        download: true,
+        dynamicTyping: false,
+        header: true,
+        error: function(error) {
+            console.log("Error found:", error);
+        },
+        complete: function(results) { 
+             //Parámetros orbitales
+             const loader = new THREE.TextureLoader();
+             for(var i=0;i < results.data.length;i++){
+               
+                if(results.data[i]["Moon of"] == planet.name){
+                
+                    const EC = Number(results.data[i]["Eccentricity"]); //Eccentricity
+                    const IN = Number(results.data[i]["Inclination [Rad]"]); //Inclination
+                    const OM = Number(results.data[i]["Orbit Rotation_Y [Rad]"]) ; //Longitud of ascending node
+                    const W = Number(results.data[i]["Orbit Rotation_X [Rad]"]); //Argument of periapsis
+                    const A = Number(results.data[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
+                    const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
+                    const NAM = results.data[i]["Name"]; //Name
+                    const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
+                    
+                    var NormalMapUrl, textureNormal;
+                    NormalMapUrl = results.data[i]["NormalMap"]; //Normal map of planet surface
+                    textureNormal = new THREE.TextureLoader().load(NormalMapUrl);
+
+                    var MoonMaterial;
+                        
+                        loader.load(textureUrl, function ( texture ) {
+                            // Create the material when the texture is loaded                                
+                                    texture.needsUpdate = true;
+
+                                    if (textureNormal != undefined) MoonMaterial = new THREE.MeshStandardMaterial( {map: texture, normalMap: textureNormal, normalScale: new THREE.Vector2(0.05,0)});
+                                    else MoonMaterial = new THREE.MeshStandardMaterial( {map: texture} );
+
+                                    planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, MoonMaterial, false));
+                        
+                                },
+                                undefined,
+                                function ( err ) {
+                                    console.error( 'An error happened.' + err);
+                                }
+                        );
+                    }
+                }
+        }
+        }); 
+}
+
 export function CreateOrbits(UA,scene){
     //Import orbit parameters
     
