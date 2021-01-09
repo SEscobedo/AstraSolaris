@@ -171,10 +171,10 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
     return ring;
  }
 
-export function CreateMoons(EarthScale,UA,planet){
+export function CreateMoons(EarthScale,UA,scene){
 //Import moon orbit parameters and properties
     
-    const urlMoons = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/data/moons_run.csv";
+    const urlMoons = "./../data/moons_run.csv";
     Papa.parse(urlMoons, {
         download: true,
         dynamicTyping: false,
@@ -184,43 +184,58 @@ export function CreateMoons(EarthScale,UA,planet){
         },
         complete: function(results) { 
              //Parámetros orbitales
-             const loader = new THREE.TextureLoader();
-             for(var i=0;i < results.data.length;i++){
-               
-                if(results.data[i]["Moon of"] == planet.name){
+            const loader = new THREE.TextureLoader();
+            
+            for(var i=0;i < results.data.length;i++){
                 
+                    const planet = scene.getObjectByName(results.data[i]["Moon of"]);
+                    const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
+                    
+                if (planet != undefined && EcRadius > 0){
                     const EC = Number(results.data[i]["Eccentricity"]); //Eccentricity
                     const IN = Number(results.data[i]["Inclination [Rad]"]); //Inclination
                     const OM = Number(results.data[i]["Orbit Rotation_Y [Rad]"]) ; //Longitud of ascending node
                     const W = Number(results.data[i]["Orbit Rotation_X [Rad]"]); //Argument of periapsis
                     const A = Number(results.data[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
-                    const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
+                    
                     const NAM = results.data[i]["Name"]; //Name
                     const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                     
-                    var NormalMapUrl, textureNormal;
-                    NormalMapUrl = results.data[i]["NormalMap"]; //Normal map of planet surface
-                    textureNormal = new THREE.TextureLoader().load(NormalMapUrl);
-
+                    
+                    const NormalMapUrl = results.data[i]["NormalMap"]; //Normal map of planet surface
+                    const textureNormal = new THREE.TextureLoader().load(NormalMapUrl);
+                    
                     var MoonMaterial;
-                        
-                        loader.load(textureUrl, function ( texture ) {
-                            // Create the material when the texture is loaded                                
+                    const MoonMaterialColor = new THREE.MeshStandardMaterial( {color: 0x96876B} );
+                    
+                    if (textureUrl != ""){
+                        loader.load( "./../" + textureUrl, function ( texture ) {
+                            // Create the material when the texture is loaded 
                                     texture.needsUpdate = true;
-
-                                    if (textureNormal != undefined) MoonMaterial = new THREE.MeshStandardMaterial( {map: texture, normalMap: textureNormal, normalScale: new THREE.Vector2(0.05,0)});
+                                    
+                                    if (textureNormal != undefined){
+                                       
+                                        MoonMaterial = new THREE.MeshStandardMaterial( {
+                                            map: texture, 
+                                            normalMap: textureNormal, 
+                                            normalScale: new THREE.Vector2(0.05,0.05)});
+                                    } 
                                     else MoonMaterial = new THREE.MeshStandardMaterial( {map: texture} );
 
-                                    planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, MoonMaterial, false));
-                        
+                                    planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x3E4E4E, 0.7, MoonMaterial, false));
+                                    
                                 },
                                 undefined,
                                 function ( err ) {
                                     console.error( 'An error happened.' + err);
                                 }
                         );
+                    }else{
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x3E4E4E, 0.7, MoonMaterialColor, false));
                     }
+                        
                 }
+            }
         }
         }); 
 }
@@ -643,16 +658,17 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmo
    Planet.add(ring);
   }
 
-  else if(Name == "Earth"){
+  /*else if(Name == "Earth"){
     //Add earth's moon
     const textureMoon =  new THREE.TextureLoader().load('textures/moon.jpg');
     const textureMoonNormal =  new THREE.TextureLoader().load('textures/moon_normal.jpg');
     const materialMoon = new THREE.MeshStandardMaterial({map : textureMoon,
     normalMap:textureMoonNormal,
     normalScale: new THREE.Vector2(0.05,0.05)});
-    var MoonSystem = CreatePlanet(0.0549,0.08979719,0,0,60.268165113,0.2725,"Moon",0x3E4E4E, 0.7, materialMoon, false)
+    var MoonSystem = CreatePlanet(0.0549,0.08979719,0,0,0.00256955529 *  23454.8 * 5,0.2725,"Moon",0x3E4E4E, 0.1, materialMoon, false)
     Planet.add(MoonSystem);
-  }
+  }*/
+
   Planet.UserData = Radius;
 
   const Group = new THREE.Group();
@@ -689,9 +705,8 @@ export function SolarSystemUpdate(scene, camera){
     //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
     //earthAtmos.rotation.y += 0.00005;
     const earth = scene.getObjectByName("Earth");
-
-    if (earth != undefined) {
-        const moon = scene.getObjectByName("Moon");
+    const moon = scene.getObjectByName("Moon");
+    if (earth != undefined && moon != undefined) {
         moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
         moon.rotation.y = -80 / 180 * Math.PI ;
     }

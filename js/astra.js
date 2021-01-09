@@ -67,6 +67,7 @@ let camera, scene, renderer, cameraControls, controls,
 
         //Add planets
         MC.CreatePlanets(escala,UA,scene);
+        MC.CreateMoons(escala,UA,scene);
 
         //camera controls
         cameraControls = new CameraControls( camera, renderer.domElement );
