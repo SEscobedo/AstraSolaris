@@ -1,21 +1,18 @@
 //import { XRHitTestTrackableType } from 'three';
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
+import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, ring, neptune, uranus,
- Orbit_mercury, Orbit_venus, Orbit_earth, Orbit_mars, Orbit_jupiter, Orbit_saturn, Orbit_uranus, Orbit_neptune, Orbit_moon;
+
 
  var tm = new Date();
  var JulianDateIndex;
 
- //var mesh;
- var strDownloadMime = "image/octet-stream";
-
-
+ const root = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris"
  //vínculos a datos de efemérides
  var url = [];
- url[0] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/sun_2000-2024.csv";
- url[1] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/mercury_2000-2024.csv";
+ url[0] = root + "/sun_2000-2024.csv";
+ url[1] = root + "/mercury_2000-2024.csv";
  url[2] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/venus_2000-2024.csv";
  url[3] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/earth_2000-2024.csv";
  url[9] = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris/moon_2000-2024.csv";
@@ -90,8 +87,23 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
  }
 
  export function CreatePlanets(EarthScale,UA,scene){
+
+    const urlMoons = "./../data/moons_run.csv";
+    
+    Papa.parse(urlMoons, {
+        download: true,
+        dynamicTyping: false,
+        header: true,
+        error: function(error) {
+            console.log("Error found:", error);
+        },
+        complete: function(results) { 
+             //Moons data      
+             const MoonsData = results.data;
+             console.log(urlMoons);
+            
     //Import orbit parameters 
-    const urlPlanets = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/data/planets_run.csv";
+    const urlPlanets = "./../data/planets_run.csv";
     
     Papa.parse(urlPlanets, {
         download: true,
@@ -113,6 +125,8 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                 const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
                 const NAM = results.data[i]["Name"]; //Name
                 const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
+                const Modelurl = results.data[i]["Model"]; //Model .glb
+                const ModelScale = Number(results.data[i]["ModelScale"]); //Model .glb;
                 
                 var NormalMapUrl, textureNormal, SpecularMapUrl, textureSpecular, claudsTextureUrl, textureClouds
                 if(NAM == "Earth"){
@@ -123,9 +137,6 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                     claudsTextureUrl = results.data[i]["claudsTexture"]; //Normal map of planet surface
                     textureClouds = new THREE.TextureLoader().load(claudsTextureUrl);
                 }
-               
-
-                
                 
                 //const texturePlanet = new THREE.TextureLoader().load(textureUrl);
                     var PlanetMaterial;
@@ -134,10 +145,14 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                     loader.load(textureUrl, function ( texture ) {
                         // Create the material when the texture is loaded                                
                                 texture.needsUpdate = true;
-
+                                var planet;
                                 if(NAM != "Earth"){ 
                                     PlanetMaterial = new THREE.MeshStandardMaterial( {map: texture} );
-                                    scene.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial, false));
+                                    planet = CreatePlanet( EC, IN, OM, W, A * UA ,
+                                         EcRadius * EarthScale,
+                                        EarthScale, UA, NAM, 0x4E4E4E,
+                                        0.3, PlanetMaterial, MoonsData,
+                                        false);
                                 }
                                 else{
             
@@ -147,9 +162,13 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                                         normalScale: new THREE.Vector2(0.05,0),
                                         roughnessMap:textureSpecular,
                                         roughness:0.5});
-                                        scene.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x4E4E4E, 0.3, PlanetMaterial, true, AtmosMaterial));
+                                        planet = CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale,
+                                        EarthScale, UA, NAM, 0x4E4E4E, 0.3, PlanetMaterial, 
+                                        MoonsData, Modelurl, ModelScale, 
+                                        true, AtmosMaterial);
                                 }
-                                
+
+                                scene.add(planet);
                             },
                             undefined,
                             function ( err ) {
@@ -158,7 +177,9 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
                         );
                 }
         }
-        }); 
+        });
+    }}
+    );  
  }
  
  function CreateRing(SaturnScale){
@@ -170,74 +191,107 @@ let mars, marsAtmos, mercury, venus, earth, moon, earthAtmos, jupiter, saturn, r
     ring.position.set(0,0,0);
     return ring;
  }
+ 
+ function CreateSatellitesOf(EarthScale,UA,planet, MoonsData){
+    console.log("Crating moons of " + planet.name);
 
-export function CreateMoons(EarthScale,UA,scene){
-//Import moon orbit parameters and properties
-    
-    const urlMoons = "./../data/moons_run.csv";
-    Papa.parse(urlMoons, {
-        download: true,
-        dynamicTyping: false,
-        header: true,
-        error: function(error) {
-            console.log("Error found:", error);
-        },
-        complete: function(results) { 
-             //Parámetros orbitales
-            const loader = new THREE.TextureLoader();
+    for(var i=0; i < MoonsData.length ; i++){
             
-            for(var i=0;i < results.data.length;i++){
-                
-                    const planet = scene.getObjectByName(results.data[i]["Moon of"]);
-                    const EcRadius = Number(results.data[i]["Relative Ecuatorial Radius"]); //Radius
-                    
-                if (planet != undefined && EcRadius > 0){
-                    const EC = Number(results.data[i]["Eccentricity"]); //Eccentricity
-                    const IN = Number(results.data[i]["Inclination [Rad]"]); //Inclination
-                    const OM = Number(results.data[i]["Orbit Rotation_Y [Rad]"]) ; //Longitud of ascending node
-                    const W = Number(results.data[i]["Orbit Rotation_X [Rad]"]); //Argument of periapsis
-                    const A = Number(results.data[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
-                    
-                    const NAM = results.data[i]["Name"]; //Name
-                    const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
-                    
-                    
-                    const NormalMapUrl = results.data[i]["NormalMap"]; //Normal map of planet surface
-                    const textureNormal = new THREE.TextureLoader().load(NormalMapUrl);
-                    
-                    var MoonMaterial;
-                    const MoonMaterialColor = new THREE.MeshStandardMaterial( {color: 0x96876B} );
-                    
-                    if (textureUrl != ""){
-                        loader.load( "./../" + textureUrl, function ( texture ) {
-                            // Create the material when the texture is loaded 
-                                    texture.needsUpdate = true;
-                                    
-                                    if (textureNormal != undefined){
-                                       
-                                        MoonMaterial = new THREE.MeshStandardMaterial( {
-                                            map: texture, 
-                                            normalMap: textureNormal, 
-                                            normalScale: new THREE.Vector2(0.05,0.05)});
-                                    } 
-                                    else MoonMaterial = new THREE.MeshStandardMaterial( {map: texture} );
+            const EcRadius = Number(MoonsData[i]["Relative Ecuatorial Radius"]); //Radius
+        
+        if ( MoonsData[i]["Moon of"] == planet.name && EcRadius > 0){
+            const EC = Number(MoonsData[i]["Eccentricity"]); //Eccentricity
+            const IN = Number(MoonsData[i]["Inclination [Rad]"]); //Inclination
+            const OM = Number(MoonsData[i]["Orbit Rotation_Y [Rad]"]) ; //Longitud of ascending node
+            const W = Number(MoonsData[i]["Orbit Rotation_X [Rad]"]); //Argument of periapsis
+            const A = Number(MoonsData[i]["Orbit semimajor axis [UA]"]); //Semi-major axis
+            const NAM = MoonsData[i]["Name"]; //Name
+            const TextureUrl = MoonsData[i]["TextureFile"]; //Texture
+            const NormalMapUrl = MoonsData[i]["NormalMap"]; //NormalMap
+            const Modelurl = MoonsData[i]["Model"]; //Model .glb
+            const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model .glb;
+            
+       
+        
+           console.log("Texture: " + TextureUrl);
+            if (TextureUrl != ""){
+                const loader = new THREE.TextureLoader();
 
-                                    planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x3E4E4E, 0.7, MoonMaterial, false));
-                                    
-                                },
-                                undefined,
-                                function ( err ) {
-                                    console.error( 'An error happened.' + err);
-                                }
-                        );
-                    }else{
-                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, NAM, 0x3E4E4E, 0.7, MoonMaterialColor, false));
-                    }
+                // load texture
+                loader.load(
+                    TextureUrl,
+                    function ( texture ) {
+                        texture.needsUpdate = true;
+                        const MoonMaterial = new THREE.MeshStandardMaterial( {
+                            map: texture
+                        } );
                         
-                }
+                        if (NormalMapUrl != ""){
+                            const loaderNormal = new THREE.TextureLoader();
+                            loaderNormal.load(NormalMapUrl, function (NormalTexture) {
+                                NormalTexture.needsUpdate = true;
+                                console.log("Normal Map: " + NormalMapUrl);
+                                MoonMaterial.normalMap =  NormalTexture;
+                                MoonMaterial.normalScale = new THREE.Vector2(0.05,0.05)
+                            });
+                        } 
+                        
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA ,
+                            EcRadius * EarthScale, EarthScale, UA, NAM, 0x3E4E4E, 0.7, MoonMaterial,
+                            undefined, Modelurl, ModelScale,
+                            false));
+
+                        console.log("Creating " + NAM);
+                    },
+                    undefined,
+                    function ( err ) {
+                        console.error( 'An error happened.' );
+                    }
+                );
+
+
+
+
+            }
+            else{
+                const MoonMaterialColor = new THREE.MeshStandardMaterial( {color: 0xA88052} );
+                planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale,
+                     EarthScale, UA, NAM, 0x3E4E4E, 0.7, MoonMaterialColor,
+                    undefined, Modelurl, ModelScale,
+                    false));
+                console.log("Crating " + NAM);
             }
         }
-        }); 
+        
+    } 
+}
+
+function MoonsTextureOverride(results){
+    if (textureUrl != ""){
+        loader.load( "./../" + textureUrl, function ( texture ) {
+            // Create the material when the texture is loaded 
+                    texture.needsUpdate = true;
+                    
+                    if (textureNormal != undefined){
+                       
+                        MoonMaterial = new THREE.MeshStandardMaterial( {
+                            map: texture, 
+                            normalMap: textureNormal, 
+                            normalScale: new THREE.Vector2(0.05,0.05)});
+                    } 
+                    else MoonMaterial = new THREE.MeshStandardMaterial( {map: texture} );
+
+                    planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, EarthScale, UA, NAM, 0x3E4E4E, 0.7, MoonMaterial, false));
+                    
+                },
+                undefined,
+                function ( err ) {
+                    console.error( 'An error happened.' + err);
+                }
+        );
+    }else{
+        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale, EarthScale,UA,NAM, 0x3E4E4E, 0.7, MoonMaterialColor, false));
+    }
 }
 
 export function CreateOrbits(UA,scene){
@@ -619,7 +673,7 @@ function CreateOsculOrbit(X,Y,Z,EC,IN,OM,W,A,Name){
   }
 
 
-function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmosphere, AtmosMaterial = undefined){
+function CreatePlanet(EC,IN,OM,W,A,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
  
  //osculator orbit
  const B = A * Math.sqrt( 1 - Math.pow( EC , 2 ) );
@@ -642,11 +696,46 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmo
   var oscul = new THREE.Line( geometryOrbit, materialOrbit );
   oscul.name = "OrbitOf" + Name;
   
-  
-  const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 300, 300);
 
-  const Planet = new THREE.Mesh(geometryPlanet, PlanetMaterial);
-  
+  //Planet (moon, object)
+  const Planet = new THREE.Group();
+
+if (Modelurl != ""){
+    //load Model
+    console.log(Name + " Model url: " + Modelurl);
+    const loader = new GLTFLoader();
+    loader.load(
+        Modelurl,
+        // called when the resource is loaded
+        function ( gltf ) {
+            
+            if (ModelScale == 0) ModelScale = 1;
+            gltf.scene.children[0].scale.multiplyScalar(ModelScale);
+            Planet.add( gltf.scene.children[0]);
+        },
+
+        // called while loading is progressing
+        function ( xhr ) {
+
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+        },
+        // called when loading has errors
+        function ( error ) {
+
+            console.log( Modelurl + ' An error happened' + error);
+
+        }
+    );
+
+}
+else{
+  const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 200, 200);
+  const body = new THREE.Mesh(geometryPlanet, PlanetMaterial)
+  body.name = "bodyOf" + Name;
+  Planet.add(body);
+}
+
   const r = Orbit_Line.getPoint(t);
   Planet.position.set(r.x,r.y,r.z);
   Planet.rotation.x = -90 / 180 * Math.PI ;
@@ -655,21 +744,15 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,Name,OrbitColor,t,PlanetMaterial, Atmo
 
   if (Name == "Saturn"){
    const ring = CreateRing(Radius);
+  // ring.rotation.x = -5 / 180 * Math.PI ;
    Planet.add(ring);
   }
 
-  /*else if(Name == "Earth"){
-    //Add earth's moon
-    const textureMoon =  new THREE.TextureLoader().load('textures/moon.jpg');
-    const textureMoonNormal =  new THREE.TextureLoader().load('textures/moon_normal.jpg');
-    const materialMoon = new THREE.MeshStandardMaterial({map : textureMoon,
-    normalMap:textureMoonNormal,
-    normalScale: new THREE.Vector2(0.05,0.05)});
-    var MoonSystem = CreatePlanet(0.0549,0.08979719,0,0,0.00256955529 *  23454.8 * 5,0.2725,"Moon",0x3E4E4E, 0.1, materialMoon, false)
-    Planet.add(MoonSystem);
-  }*/
 
   Planet.UserData = Radius;
+
+  //Add moons (satellites) of the planet
+  if (MoonsData != undefined) CreateSatellitesOf(EarthScale,UA,Planet,MoonsData);
 
   const Group = new THREE.Group();
   Group.add(Planet);
@@ -701,7 +784,7 @@ export function SolarSystemUpdate(scene, camera){
     //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
     //venus.rotation.y -= 0.001;
 
-    const desfase = 3.2; //desfase resepcto a la hora local
+    //const desfase = 3.2; //desfase resepcto a la hora local
     //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
     //earthAtmos.rotation.y += 0.00005;
     const earth = scene.getObjectByName("Earth");
