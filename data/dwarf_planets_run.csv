@@ -1,6 +1,6 @@
 Name,Relative_Ecuatorial_Radius,Relative_Polar_Radius,"Orbit_semimajor_axis_[UA]",Inclination,Eccentricity,"Argument_of_periapsis","L_ascending_node",Mean_Longitude,Right_Ascension,Declination,Reference_Date,Model,ModelScale,Mesh_[dataset],TextureFile,NormalMap,"bumpMap ",BumpScale,AOMap,AOMapIntensity,displacementMap,displacementScale,displacementBias,emissiveMap,emissiveIntensity,emissiveColor,SpecularMap,claudsTexture,lightMap,roughnessMap,metalnessMap
-Ceres,0.148319,0.148319,"2.768",0.18483037,0.079,"0","0",,,,,,,,textures/4k_ceres_fictional.jpg,,"",,,,,,,,,,,,,,
-Pluto,0.186,0.187,"39.48168677",0.29917997705,0.24880766,"3.91070270627","1.92515872787",,,,,,,,textures/pluto.jpg,,"",,,,,,,,,,,,,,
+Ceres,0.148319,0.148319,"2.7653485",10.58682,0.07913825,"72.58981","80.39320",,,,,,,,textures/4k_ceres_fictional.jpg,,"",,,,,,,,,,,,,,
+Pluto,0.186,0.187,"39.48168677",17.14175,0.24880766,"224.06676","110.30347",,,,,,,,textures/pluto.jpg,,"",,,,,,,,,,,,,,
 Eris,,,"",,,"","",,,,,,,,,,"",,,,,,,,,,,,,,
 Makemake,,,"",,,"","",,,,,,,,,,"",,,,,,,,,,,,,,
 Haumea,,,"",,,"","",,,,,,,,,,"",,,,,,,,,,,,,,

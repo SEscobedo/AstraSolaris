@@ -3,7 +3,7 @@ import * as THREE from './../node_modules/three/build/three.module.js';
 import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
 import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-
+const GRADTORAD = Math.PI/180;
 
  var tm = new Date();
  var JulianDateIndex;
@@ -110,7 +110,7 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
         dynamicTyping: false,
         header: true,
         error: function(error) {
-            console.log("Error found:", error);
+            console.log("Error found: ", error);
         },
         complete: function(results) { 
              //Parámetros orbitales
@@ -121,9 +121,9 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
 
                 if (EcRadius > 0){
                 const EC = Number(results.data[i]["Eccentricity"]); //Eccentricity
-                const IN = Number(results.data[i]["Inclination"]) ; //Inclination
-                const OM = Number(results.data[i]["L_ascending_node"]) ; //Longitud of ascending node
-                const W = Number(results.data[i]["Argument_of_periapsis"]); //Argument of periapsis
+                const IN = Number(results.data[i]["Inclination"]) * GRADTORAD; //Inclination
+                const OM = Number(results.data[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
+                const W = Number(results.data[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
                 const A = Number(results.data[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
                 
                 const NAM = results.data[i]["Name"]; //Name
@@ -219,9 +219,9 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
         if ( MoonsData[i]["Moon of"] == planet.name && EcRadius > 0){
             
             const EC = Number(MoonsData[i]["Eccentricity"]); //Eccentricity
-            const IN = Number(MoonsData[i]["Inclination"]); //Inclination
-            const OM = Number(MoonsData[i]["L_ascending_node"]) ; //Longitud of ascending node
-            const W = Number(MoonsData[i]["Argument_of_periapsis"]); //Argument of periapsis
+            const IN = Number(MoonsData[i]["Inclination"]) * GRADTORAD; //Inclination
+            const OM = Number(MoonsData[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
+            const W = Number(MoonsData[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
             const A = Number(MoonsData[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
             const NAM = MoonsData[i]["Name"]; //Name
             const TextureUrl = MoonsData[i]["TextureFile"]; //Texture
@@ -282,6 +282,41 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
                     false));
                 console.log("Crating " + NAM);
                 
+            }
+        }
+        
+    } 
+}
+
+export function CreateArtificialSatellites(EarthScale,UA,planet,SatelliteData, OrbitColor = 0x2E4E4E){
+    console.log("Crating Satellites of " + planet.name);
+    
+    for(var i=0; i < MoonsData.length ; i++){
+        
+        if ( MoonsData[i]["Moon of"] == planet.name && EcRadius > 0){
+            
+            const EC = Number(MoonsData[i]["Eccentricity"]) ; //Eccentricity
+            const IN = Number(MoonsData[i]["Inclination"]) * GRADTORAD; //Inclination
+            const OM = Number(MoonsData[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
+            const W = Number(MoonsData[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
+            const A = Number(MoonsData[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
+            const NAM = MoonsData[i]["Name"]; //Name
+            const Modelurl = MoonsData[i]["Model"]; //Model .glb
+            const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model .glb;
+            
+           
+            if (Modelulr != ""){
+             
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA ,
+                            EcRadius * EarthScale,
+                            EarthScale, UA, NAM,
+                            OrbitColor, 0.7, undefined,
+                            undefined, Modelurl, ModelScale,
+                            false));
+
+                        console.log("Creating " + NAM);
+            }else{
+                console.log("No model found for " + NAM);
             }
         }
         

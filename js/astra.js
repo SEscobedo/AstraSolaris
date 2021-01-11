@@ -70,6 +70,7 @@ let camera, scene, renderer, cameraControls, controls,
         //Add dwarf planets with natural satellites
         MC.CreatePlanets(escala,UA,scene,"./../data/dwarf_planets_run.csv", 0x5E4E4E);
         
+        
 
         //camera controls
         cameraControls = new CameraControls( camera, renderer.domElement );
@@ -338,15 +339,13 @@ export function CommandExecute(COMMAND){
     
     } else if ( COMMAND == "hide orbits") {
         
-        /*for (var i = 1;scene.children.length;i++){
-            console.log(scene.children);
-            const item = scene.children[i];*/
-            
-         //   if ( item.name.match(/OrbitOf.*/)) {
-         /*       item.visible = false;
-                console.log("hiden orbit of " + item.name);
-            }
-
+        /*for(var i = 1;scene.children.length;i++){
+            const item = scene.children[i];
+            console.log(item);*/
+            //if ( item.name.match(/OrbitOf.*/)) {
+              /*       item.visible = false;
+                       console.log("hiden orbit of " + item.name);
+                    }
         }*/
         
         
@@ -363,6 +362,12 @@ export function CommandExecute(COMMAND){
         scene.getObjectByName('OrbitOfEuropa').visible=false;   
         scene.getObjectByName('OrbitOfGanymede').visible=false;   
         scene.getObjectByName('OrbitOfCallisto').visible=false;   
+        scene.getObjectByName('OrbitOfMimas').visible=false;   
+        scene.getObjectByName('OrbitOfCeres').visible=false;   
+        scene.getObjectByName('OrbitOfPluto').visible=false;   
+        scene.getObjectByName('OrbitOfEnceladus').visible=false;   
+        scene.getObjectByName('OrbitOfPhobos').visible=false;   
+        scene.getObjectByName('OrbitOfDeimos').visible=false;   
         
         response = "\r\n orbits hidden";  
 
@@ -380,7 +385,13 @@ export function CommandExecute(COMMAND){
         scene.getObjectByName('OrbitOfIo').visible=true;   
         scene.getObjectByName('OrbitOfEuropa').visible=true;   
         scene.getObjectByName('OrbitOfGanymede').visible=true;   
-        scene.getObjectByName('OrbitOfCallisto').visible=true;   
+        scene.getObjectByName('OrbitOfCallisto').visible=true;
+        scene.getObjectByName('OrbitOfMimas').visible=true;   
+        scene.getObjectByName('OrbitOfCeres').visible=true;
+        scene.getObjectByName('OrbitOfPluto').visible=true; 
+        scene.getObjectByName('OrbitOfEnceladus').visible=true;
+        scene.getObjectByName('OrbitOfPhobos').visible=true;
+        scene.getObjectByName('OrbitOfDeimos').visible=true;
         
         response = "\r\n orbits shown"; 
         
