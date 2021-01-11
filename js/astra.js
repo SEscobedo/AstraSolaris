@@ -1,6 +1,7 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
 import * as MC from './model_constructor.js';
+//import {PostProcessing, UpdatePostProcessingEffect} from './effects.js';
 
 
 
@@ -17,9 +18,9 @@ let camera, scene, renderer, cameraControls, controls,
 
     function init() {
 
-        escala = 5 //Tamaño del radio terrestre (referencia para todos demás cuerpos celestes)
+        escala = 5 //Earth size (refference for all celestial bodies)
         
-        UA = 23454.8 * escala //Unidad astronómica (distancia media entre la tiera y el sol)
+        UA = 23454.8 * escala //Astronomical Unit (Mean distance from Earth to Sun)
         
 
         CameraControls.install( { THREE: THREE } );
@@ -60,6 +61,9 @@ let camera, scene, renderer, cameraControls, controls,
         renderer.setPixelRatio( window.devicePixelRatio );
         document.body.appendChild(renderer.domElement);
 
+        //Post-Processing
+        //PostProcessing(renderer);
+
         //CRATE SOLAR SYSTEM MODEL
         //Add stars and sun
         MC.AddStars(UA, scene);
@@ -78,7 +82,7 @@ let camera, scene, renderer, cameraControls, controls,
         cameraControls.draggingDampingFactor=0.25;
         cameraControls.verticalDragToForward = true;
 
-
+        
         //Travel Menu
         const buttonSol = document.getElementById( "Sol");
         buttonSol.addEventListener( 'click', function () {
@@ -162,6 +166,7 @@ function animate() {
         requestAnimationFrame(animate);
         MC.SolarSystemUpdate(scene, camera);
         renderer.render(scene, camera);
+        //UpdatePostProcessingEffect(scene,camera);
         
 }
 
