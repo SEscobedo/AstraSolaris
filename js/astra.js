@@ -65,8 +65,10 @@ let camera, scene, renderer, cameraControls, controls,
         MC.AddStars(UA, scene);
         MC.CreateSun(escala,scene);
 
-        //Add planets
+        //Add planets with natural satellites
         MC.CreatePlanets(escala,UA,scene);
+        //Add dwarf planets with natural satellites
+        MC.CreatePlanets(escala,UA,scene,"./../data/dwarf_planets_run.csv", 0x5E4E4E);
         
 
         //camera controls

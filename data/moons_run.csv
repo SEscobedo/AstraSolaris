@@ -1,7 +1,7 @@
-Name,Moon of,Relative Ecuatorial Radius,Relative Polar Radius,"Orbit semimajor axis [UA]",Inclination [Rad],Eccentricity,"Orbit Rotation_X [Rad]","Orbit Rotation_Y [Rad]",Mean_Longitude,Right Ascension,Declination,Reference Date,Model,ModelScale,Mesh [dataset],TextureFile,NormalMap,NormalX,NormalY,roughnessMap,metalnessMap,lightMap,"bumpMap ",BumpScale,AOMap,AOMapIntensity,displacementMap,displacementScale,displacementBias,emissiveMap,emissiveIntensity,emissiveColor
+Name,Moon of,Relative_Ecuatorial_Radius,Relative_Polar_Radius,"Orbit_semimajor_axis_[UA]",Inclination,Eccentricity,"Argument_of_periapsis","L_ascending_node",Mean_Longitude,Right_Ascension,Declination,Reference_Date,Model,ModelScale,Mesh_[dataset],TextureFile,NormalMap,NormalX,NormalY,roughnessMap,metalnessMap,lightMap,"bumpMap ",BumpScale,AOMap,AOMapIntensity,displacementMap,displacementScale,displacementBias,emissiveMap,emissiveIntensity,emissiveColor
 Moon,Earth,0.2725,,"0.00256955529",0.08979719,0.0549,"0","0",,,,,,,,textures/moon.jpg,textures/moon_normal.jpg,,,,,,"",,,,,,,,,
 Phobos,Mars,0.0017664969,,"0.00006263168",0.0187622895,0.0151,"0","0",,,,,models/glTF/Phobos_1_1000.glb,0.001,,,,,,,,,"",,,,,,,,,
-Deimos,Mars,,,"",,,"","",,,,,,,,,,,,,,,"",,,,,,,,,
+Deimos,Mars,0.0017664969,,"0.0001567061",0.031206,0.0002,"0","0",,,,,models/glTF/Deimos_1_1000.glb,0.001,,,,,,,,,"",,,,,,,,,
 Io,Jupiter,0.2855839302,,"0.00281955885",0.000698,0.004,"0","0",,,,,,,,textures/io_corrected.jpg,,,,,,,"",,,,,,,,,
 Europa,Jupiter,0.2447100731,,"0.00448602642",0.008203,0.009,"0","0",,,,,,,,textures/europa.jpg,,,,,,,"",,,,,,,,,
 Ganymede,Jupiter,0.4125327681,,"0.007155182056",0.003142,0.001,"0","0",,,,,,,,textures/ganymede.jpg,,,,,,,"",,,,,,,,,
