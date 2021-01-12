@@ -1,12 +1,13 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
 import * as MC from './model_constructor.js';
-//import {PostProcessing, UpdatePostProcessingEffect} from './effects.js';
+import {PostProcessing, UpdatePostProcessingEffect, CloseGui} from './effects.js';
 
-
+var Postprocess = false;
 
 let camera, scene, renderer, cameraControls, controls,
- escala, UA;
+escala, UA;
+
  var tm = new Date();
  const clock = new THREE.Clock();
 
@@ -60,9 +61,6 @@ let camera, scene, renderer, cameraControls, controls,
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio( window.devicePixelRatio );
         document.body.appendChild(renderer.domElement);
-
-        //Post-Processing
-        //PostProcessing(renderer);
 
         //CRATE SOLAR SYSTEM MODEL
         //Add stars and sun
@@ -166,7 +164,7 @@ function animate() {
         requestAnimationFrame(animate);
         MC.SolarSystemUpdate(scene, camera);
         renderer.render(scene, camera);
-        //UpdatePostProcessingEffect(scene,camera);
+        if (Postprocess === true) UpdatePostProcessingEffect(scene,camera);
         
 }
 
@@ -291,7 +289,18 @@ export function CommandExecute(COMMAND){
         controls.autoRotate = false;
         //controls.autoRotateSpeed = 0.2;
         response = "\r\n Camera rotation around target disabled.";    
+      //Post-Processing
       
+    } else if ( COMMAND == "post processor on") {
+        Postprocess = true;
+        PostProcessing(renderer);
+        response = "\r\n post processor on";  
+
+    } else if ( COMMAND == "post processor off") {
+        Postprocess = false;
+        CloseGui();
+        response = "\r\n post processor off";  
+
     } else if ( COMMAND == "filters") {
         response = "\r\n (1) solar filter";  
 

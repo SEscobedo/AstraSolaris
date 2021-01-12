@@ -77,6 +77,11 @@ function clearGui() {
 
 }
 
+export function CloseGui(){
+    nodepost = undefined;
+    gui.hide();
+}
+
 function addGui( name, value, callback, isColor, min, max ) {
 
     let node;
