@@ -2,8 +2,10 @@ import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
 import * as MC from './model_constructor.js';
 import {PostProcessing, UpdatePostProcessingEffect, CloseGui} from './effects.js';
+import * as GE from './geometry_editor.js';
 
 var Postprocess = false;
+var LineEditing = false;
 
 let camera, scene, renderer, cameraControls, controls,
 escala, UA;
@@ -163,6 +165,7 @@ function animate() {
         
         requestAnimationFrame(animate);
         MC.SolarSystemUpdate(scene, camera);
+        if (LineEditing === true) GE.SplinesRenderSetup();
         renderer.render(scene, camera);
         if (Postprocess === true) UpdatePostProcessingEffect(scene,camera);
         
@@ -319,7 +322,19 @@ export function CommandExecute(COMMAND){
     //mostrar la corona
     scene.getObjectByName('crown').material.opacity = 1;
     //crown.visible = true;
-    response = "\r\n solar filter removed.";  
+    response = "\r\n solar filter removed."; 
+
+    } else if ( COMMAND == "create spline") {
+    var InitialPoint = new THREE.Vector3();
+    cameraControls.getPosition(InitialPoint);
+    GE.InitLineEditor(scene, camera, renderer, document, cameraControls, escala, InitialPoint);
+    LineEditing = true;
+    response = "\r\n line editor opened";  
+
+    } else if ( COMMAND == "close spline editor") {
+    GE.CloseLineEditor();
+    LineEditing = false;
+    response = "\r\n line editor opened";  
       
     } else if ( COMMAND == "hide earth atmosphere") {
         scene.getObjectByName('AtmosEarth').visible = false;
@@ -416,7 +431,6 @@ export function CommandExecute(COMMAND){
         var Object;
         if (SplitArray.length > 1) {
             Object = scene.getObjectByName(SplitArray[1]);
-            console.log(Object);
             if (Object != undefined){
                 Object.visible = false;
                 response =  "\r\n" + Object.name + " hiden"; 
