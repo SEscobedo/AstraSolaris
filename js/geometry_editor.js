@@ -1,6 +1,7 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { TransformControls } from './../node_modules/three/examples/jsm/controls/TransformControls.js';
 import { GUI } from './../node_modules/three/examples/jsm/libs/dat.gui.module.js';
+import { XYZLoader } from './../node_modules/three/examples/jsm/loaders/XYZLoader.js';
 
 var splineHelperObjects;
 let splinePointsLength = 4;
@@ -360,4 +361,21 @@ export function CloseLineEditor(){
     document.removeEventListener( 'pointerup', onPointerUp, false );
     document.removeEventListener( 'pointermove', onPointerMove, false );
     gui.hide();
+}
+
+//xyz loader
+export function LoadXYZ(filePath){
+    const loader = new XYZLoader();
+    loader.load( filePath, function ( geometry ) {
+
+        geometry.center();
+
+        const vertexColors = ( geometry.hasAttribute( 'color' ) === true );
+
+        const material = new THREE.PointsMaterial( { size: 0.1, vertexColors: vertexColors } );
+
+        const points = new THREE.Points( geometry, material );
+        return points;
+
+    } );
 }

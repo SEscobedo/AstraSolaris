@@ -685,7 +685,7 @@ function CreatePlanet(EC,IN,OM,W,A,Radius,EarthScale,UA,Name,OrbitColor,t,Planet
   if(A > 30) np = 10000;
   else np = 5000;
 
-  var points = Orbit_Line.getPoints( 5000 );
+  var points = Orbit_Line.getPoints( np );
   var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
   
   var materialOrbit = new THREE.LineBasicMaterial( { color : OrbitColor } );

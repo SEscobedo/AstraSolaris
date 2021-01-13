@@ -40,10 +40,15 @@
             import Stats from './../node_modules/three/examples/jsm/libs/stats.module.js';
             import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
             import {CreateOsculOrbit2} from './../js/model_constructor.js';
+            import { GUI } from './../node_modules/three/examples/jsm/libs/dat.gui.module.js';
 
 
-			let container, stats, planet, cameraControls, satellite, Orbit_Line, time, SatPosVector,origin, orbitGroup;
+            let container, stats, planet, cameraControls, satellite, Orbit_Line, time,
+            dirNorm, dirY, SatPosVector,origin, orbitGroup, lineOfNodes;
             let camera, cameraTarget, scene, renderer;
+            let a, e, w, i, n;
+            let Orbit;
+            const GRADTORAD =   Math.PI / 180;
             const clock = new THREE.Clock();
             time = 0;
 
@@ -51,6 +56,50 @@
 			animate();
 
 			function init() {
+                const params = {
+                Semimajor_axis: 1.7,
+                Eccentricity: 0.5,
+                Argument_of_periapsis: 30,
+                Longitude_of_ascending_node: 15,
+                Inclination: 30,
+                Mean_Anomaly: 0.5,
+                Retrograd_motion: false,
+                };
+                
+                a = params.Semimajor_axis;
+                e = params.Eccentricity;
+                n = params.Longitude_of_ascending_node;
+                w = params.Argument_of_periapsis;
+                i = params.Inclination;
+                //m = 30;
+
+                const gui = new GUI();
+
+                gui.add( params, 'Semimajor_axis' , 0.5, 5 ).step( 0.1 ).onChange( function ( value ) {
+                    a = value;
+                    ElementsUpdate();
+                });
+                gui.add( params, 'Eccentricity' , 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+                    e = value;
+                    ElementsUpdate();
+                });
+               // gui.add( params, 'Mean_Anomaly' , 0, 360 ).step( 1 ).onChange( function ( value ) {
+               //     m = value;
+               // });
+                gui.add( params, 'Argument_of_periapsis', 0, 360 ).step( 0.1 ).onChange( function ( value ) {
+                    w = value;
+                    ElementsUpdate();
+                } );
+                gui.add( params, 'Longitude_of_ascending_node', 0, 360 ).step( 0.1 ).onChange( function ( value ) {
+                    n = value;
+                    ElementsUpdate();
+                } );
+                gui.add( params, 'Inclination', 0, 360).step( 0.1 ).onChange( function ( value ) {
+                    i = value;
+                    ElementsUpdate();
+                });
+                gui.add( params, 'Retrograd_motion' );
+                gui.open();
 
 				container = document.createElement( 'div' );
                 document.body.appendChild( container );
@@ -111,42 +160,25 @@
                 const VernalEquinoxOrto = new THREE.ArrowHelper( dirZ, origin, 2, 0xffff00 );
                 scene.add( VernalEquinoxOrto );
 
-                const dirY = new THREE.Vector3( 0, 1, 0 );
+                dirY = new THREE.Vector3( 0, 1, 0 );
                 const VernalEquinoxOrtoY = new THREE.ArrowHelper( dirY, origin, 2, 0xffff00 );
                 scene.add( VernalEquinoxOrtoY );
 
                
                 
-                //Orbit
-                const a = 1.7;
-                const b = 1.4;
-                const e = Math.sqrt(1-Math.pow(b,2)/Math.pow(a,2));
-                const f = a * e;
-
-                Orbit_Line = new THREE.EllipseCurve(
-                    f,  0,            // ax, aY
-                    a, b, // xRadius (semieje menor), yRadius (semieje mayor)
-                    0,  2 * Math.PI,  // aStartAngle, aEndAngle
-                    false,            // aClockwise
-                    0                 // aRotation
-                );
-
-
-
-                var points = Orbit_Line.getPoints( 100 );
-                var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
+                //OrbitPath
                 
+                Orbit_Line = GetOrbitLine(a,e);
+
                 var materialOrbit = new THREE.LineBasicMaterial( { color : 0x1AB1CD } );
-                
+
                 // Create the final object to add to the scene
-                const Orbit = new THREE.Line( geometryOrbit, materialOrbit );
-                console.log(Orbit);
-               // const Orbit = CreateOsculOrbit2(0,0,0,e,0,0,0,a,"Orbit");
-                
+                Orbit = new THREE.Line( GetGeometryOrbit(Orbit_Line), materialOrbit);
+            
 
                  //orbiting object
                 satellite = new THREE.Mesh(
-					new THREE.SphereBufferGeometry( 0.05, 10, 10),
+					new THREE.SphereBufferGeometry( 0.05, 10, 20),
 					new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } )
                 );
                 const r = Orbit_Line.getPoint(0.5);
@@ -167,10 +199,11 @@
                 
                 //Normal axis to the orbit plane
                 const NormalAxis = new THREE.ArrowHelper( Orbit.normal, origin, 1.5, 0x228811 );
-
+                
+    
                 const Inpoint = Orbit_Line.getPoint(0);
                 const dirInpoint = new THREE.Vector3( Inpoint.x, Inpoint.y, Inpoint.z);
-                var dirNorm = new THREE.Vector3();
+                dirNorm = new THREE.Vector3();
                 dirNorm.crossVectors(dirInpoint, dirPer);
                 dirNorm.normalize();
 
@@ -199,19 +232,11 @@
                 orbitGroup.add(NormalAxis);
                 //orbitGroup.add(NormalAxis2);
 
-                
-                orbitGroup.rotation.y = 30 / 180 * Math.PI; //grados;
-                orbitGroup.rotation.z = 0 / 180 * Math.PI; //grados;
-                orbitGroup.rotation.x = (30 - 90) / 180 * Math.PI; //grados
-
-                 //Line of nodes
-
                 dirNorm.applyQuaternion(orbitGroup.quaternion);
-                var dirNodes = new THREE.Vector3();
-                dirNodes.crossVectors(dirNorm,dirY);        
-            
-                dirNodes.normalize();                                
-                const lineOfNodes = new THREE.ArrowHelper( dirNodes, origin, 1, 0xEE11FF);
+                OrbitRotationParam(i * GRADTORAD,n * GRADTORAD,w * GRADTORAD,orbitGroup, dirNorm);
+
+                 //Line of nodes                
+                lineOfNodes = CreateLineOfNodes(dirNorm, dirY);
                 scene.add( lineOfNodes );
 
 
@@ -265,7 +290,59 @@
 
             window.addEventListener( 'resize', onWindowResize, false );
 
-			}
+            }
+
+            function GetOrbitLine(a,e){
+                const b = a * Math.sqrt(1 - Math.pow(e,2));
+                const f = a * e;
+                
+                const OrbitPath = new THREE.EllipseCurve(
+                    f,  0,            // ax, aY
+                    a, b, // xRadius (semieje menor), yRadius (semieje mayor)
+                    0,  2 * Math.PI,  // aStartAngle, aEndAngle
+                    false,            // aClockwise
+                    0                 // aRotation
+                );
+                return OrbitPath;
+            }
+            
+            function GetGeometryOrbit(OrbitLine){
+
+                var points = Orbit_Line.getPoints( 100 );
+
+                return  new THREE.BufferGeometry().setFromPoints( points );
+                
+            }
+            function CreateLineOfNodes(Norm, dirY){
+                var dirNodes = new THREE.Vector3();
+                dirNodes.crossVectors(Norm,dirY);        
+            
+                dirNodes.normalize();                                
+                return new THREE.ArrowHelper( dirNodes, origin, 1, 0xEE11FF);
+            }
+
+            
+            function ElementsUpdate(){
+                //Orbit.Geometry = undefined;
+                //Orbit.Geometry = GetGeometryOrbit(GetOrbitLine(a,e,100));
+                //Orbit.updateMatrix();
+                //update orientation
+               /* const orbitline = GetOrbitLine(a,e,100)
+                const per = orbitline.getPoint(0.5);
+                const dirPer = new THREE.Vector3( per.x, per.y, per.z);
+                dirPer.normalize();
+                const Inpoint = orbitline.getPoint(0);
+                const dirInpoint = new THREE.Vector3( Inpoint.x, Inpoint.y, Inpoint.z);
+                const Norm = new THREE.Vector3();
+                Norm.crossVectors(dirInpoint, dirPer);
+                Norm.normalize();
+                Norm.applyQuaternion(orbitGroup.quaternion);*/
+            
+                OrbitRotationParam(i * GRADTORAD,n  * GRADTORAD,w * GRADTORAD,orbitGroup);
+               
+        
+                
+            }
 
 
 			function addShadowedLight( x, y, z, color, intensity ) {
@@ -296,15 +373,34 @@
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-			}
+            }
+            function OrbitRotationParam( i ,n ,w, Group){
+                Group.rotation.x = -90 * GRADTORAD;
+                Group.rotation.y = 0;
+                Group.rotation.z = 90 * GRADTORAD;
+                Group.rotateOnWorldAxis(dirY, n); //longitude of ascending node
+                Group.rotation.z += w; //Argument of periapsis
+
+               
+                
+                const dirNodes = new THREE.Vector3(Math.sin(n),0,Math.cos(n));
+                dirNodes.normalize();
+
+                if (lineOfNodes) lineOfNodes.setDirection(dirNodes);                                
+                //lineOfNodes.setLength(1);
+                
+                Group.rotateOnWorldAxis(dirNodes, i); //Inclination
+            
+            }
+
 
 			function animate() {
 
 				requestAnimationFrame( animate );
 				const delta = clock.getDelta();
-	            const elapsed = clock.getElapsedTime();
+	           // const elapsed = clock.getElapsedTime();
                 const updated = cameraControls.update( delta );
-                //if (time > 1) t = 0;
+                
                 time += 0.0005
                 const distance = origin.distanceTo(satellite.position);
                 const r = Orbit_Line.getPoint(time);
@@ -326,7 +422,8 @@
 
 				renderer.render( scene, camera );
 
-			}
+            }
+        
 
 		</script>
 	</body>

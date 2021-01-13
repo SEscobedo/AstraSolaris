@@ -7,7 +7,7 @@ import * as GE from './geometry_editor.js';
 var Postprocess = false;
 var LineEditing = false;
 
-let camera, scene, renderer, cameraControls, controls,
+let camera, scene, renderer, cameraControls,
 escala, UA;
 
  var tm = new Date();
@@ -287,12 +287,6 @@ export function CommandExecute(COMMAND){
     } else if ( COMMAND == "-around") {
         cameraControls.rotate( -Math.PI/2, 0, true )
         response = "\r\n Camera rotation around target enabled."; 
-
-    } else if ( COMMAND == "stop around") {
-        controls.autoRotate = false;
-        //controls.autoRotateSpeed = 0.2;
-        response = "\r\n Camera rotation around target disabled.";    
-      //Post-Processing
       
     } else if ( COMMAND == "post processor on") {
         Postprocess = true;
@@ -455,8 +449,20 @@ export function CommandExecute(COMMAND){
                 response = "\r\n Object not found."; 
             }
         }
-      
+   
+    } else if ( COMMAND == "load xyz") {
 
+    /*// creating input on-the-fly
+    var input = document.createElement("input");
+    input.attr("type", "file");
+    // add onchange handler if you wish to get the file :)
+    input.trigger("click"); // opening dialog
+    //return false; // avoiding navigation
+    var file = document.getElementById("file").files[0];
+
+    //scene.add(GE.LoadXYZ(file));*/
+    response = "\r\n not implemented fucntion";
+        
     } else {
         curr_line = COMMAND;
         response = "\r\n Unknown command <<" + curr_line + ">>";  
