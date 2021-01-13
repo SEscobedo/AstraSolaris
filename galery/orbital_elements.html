@@ -43,7 +43,7 @@
             import { GUI } from './../node_modules/three/examples/jsm/libs/dat.gui.module.js';
 
 
-            let container, stats, planet, cameraControls, satellite, Orbit_Line, time,
+            let container, stats, planet, cameraControls, satellite, Orbit_Line, OrbitPlane, time,
             dirNorm, dirY, SatPosVector,origin, orbitGroup, lineOfNodes;
             let camera, cameraTarget, scene, renderer;
             let a, e, w, i, n;
@@ -59,11 +59,10 @@
                 const params = {
                 Semimajor_axis: 1.7,
                 Eccentricity: 0.5,
-                Argument_of_periapsis: 30,
-                Longitude_of_ascending_node: 15,
+                Argument_of_periapsis: 50,
+                Longitude_of_ascending_node: 80,
                 Inclination: 30,
                 Mean_Anomaly: 0.5,
-                Retrograd_motion: false,
                 };
                 
                 a = params.Semimajor_axis;
@@ -75,14 +74,14 @@
 
                 const gui = new GUI();
 
-                gui.add( params, 'Semimajor_axis' , 0.5, 5 ).step( 0.1 ).onChange( function ( value ) {
+              /*  gui.add( params, 'Semimajor_axis' , 0.5, 5 ).step( 0.1 ).onChange( function ( value ) {
                     a = value;
                     ElementsUpdate();
                 });
                 gui.add( params, 'Eccentricity' , 0, 1 ).step( 0.01 ).onChange( function ( value ) {
                     e = value;
                     ElementsUpdate();
-                });
+                });*/
                // gui.add( params, 'Mean_Anomaly' , 0, 360 ).step( 1 ).onChange( function ( value ) {
                //     m = value;
                // });
@@ -94,11 +93,10 @@
                     n = value;
                     ElementsUpdate();
                 } );
-                gui.add( params, 'Inclination', 0, 360).step( 0.1 ).onChange( function ( value ) {
+                gui.add( params, 'Inclination', 0, 180).step( 0.1 ).onChange( function ( value ) {
                     i = value;
                     ElementsUpdate();
                 });
-                gui.add( params, 'Retrograd_motion' );
                 gui.open();
 
 				container = document.createElement( 'div' );
@@ -207,7 +205,7 @@
                 dirNorm.crossVectors(dirInpoint, dirPer);
                 dirNorm.normalize();
 
-                //const NormalAxis2 = new THREE.ArrowHelper( dirNorm, origin, 2, 0xff0000 );
+              
 
                 //orbit plane
                 const material2 = new THREE.MeshPhongMaterial( { 
@@ -217,11 +215,13 @@
                     transparent: true,
                     opacity: 0.5
                 });
-                const OrbitPlane = new THREE.Mesh(
-					new THREE.PlaneBufferGeometry( 6, 4 ),
+
+                OrbitPlane = new THREE.Mesh(
+					new THREE.PlaneBufferGeometry( 5.5, 4 ),
 					material2
 				);
                 OrbitPlane.receiveShadow = true;
+                //OrbitPlane.position.set(1,0,0);
 
                 orbitGroup = new THREE.Group();
                 orbitGroup.add(Orbit);
@@ -327,16 +327,10 @@
                 //Orbit.Geometry = GetGeometryOrbit(GetOrbitLine(a,e,100));
                 //Orbit.updateMatrix();
                 //update orientation
-               /* const orbitline = GetOrbitLine(a,e,100)
-                const per = orbitline.getPoint(0.5);
-                const dirPer = new THREE.Vector3( per.x, per.y, per.z);
-                dirPer.normalize();
-                const Inpoint = orbitline.getPoint(0);
-                const dirInpoint = new THREE.Vector3( Inpoint.x, Inpoint.y, Inpoint.z);
-                const Norm = new THREE.Vector3();
-                Norm.crossVectors(dirInpoint, dirPer);
-                Norm.normalize();
-                Norm.applyQuaternion(orbitGroup.quaternion);*/
+               /* const orbitline = GetOrbitLine(a,e,100)*/
+              
+                if (i==0 || i== 180) OrbitPlane.visible = false;
+                else OrbitPlane.visible = true;
             
                 OrbitRotationParam(i * GRADTORAD,n  * GRADTORAD,w * GRADTORAD,orbitGroup);
                
@@ -375,20 +369,20 @@
 
             }
             function OrbitRotationParam( i ,n ,w, Group){
+
                 Group.rotation.x = -90 * GRADTORAD;
                 Group.rotation.y = 0;
                 Group.rotation.z = 90 * GRADTORAD;
                 Group.rotateOnWorldAxis(dirY, n); //longitude of ascending node
                 Group.rotation.z += w; //Argument of periapsis
 
-               
-                
                 const dirNodes = new THREE.Vector3(Math.sin(n),0,Math.cos(n));
                 dirNodes.normalize();
 
                 if (lineOfNodes) lineOfNodes.setDirection(dirNodes);                                
                 //lineOfNodes.setLength(1);
                 
+
                 Group.rotateOnWorldAxis(dirNodes, i); //Inclination
             
             }
