@@ -1,9 +1,9 @@
-Name,Relative_Ecuatorial_Radius,Relative_Polar_Radius,"Orbit_semimajor_axis_[UA]",Inclination,Eccentricity,"Argument_of_periapsis","L_ascending_node",Mean_Longitude,Right_Ascension,Declination,Reference_Date,Model,ModelScale,Mesh_[dataset],TextureFile,NormalMap,"bumpMap ",BumpScale,AOMap,AOMapIntensity,displacementMap,displacementScale,displacementBias,emissiveMap,emissiveIntensity,emissiveColor,SpecularMap,claudsTexture,lightMap,roughnessMap,metalnessMap
-Mercury,0.383,0.384,"0.38709893",7.00487,0.20563593,"77.45645","48.33167",,,,,,,,textures/8k_mercury.jpg,,"",,,,,,,,,,,,,,
-Venus,0.949,0.952,"0.72333199",3.39471,0.00677323,"131.53298","76.68069",,,,,,,,textures/4k_venus_atmosphere.jpg,,"",,,,,,,,,,,,,,
-Earth,1,0.99665,"1.00000011",0.00005,0.01671022,"102.94719","-11.26064",,,,,,,,textures/earth_blue_NASA_2.jpg,textures/earth_normal_2048.jpg,"",,,,,,,,,,textures/earth_specular_2048_g.jpg,textures/8k_earth_clouds.jpg,,,
-Mars,0.532,0.531,"1.52366231",1.85061,0.09341233,"336.04084","49.57854",,,,,,,,textures/mars.jpg,,"",,,,,,,,,,,,,,
-Jupiter,11.209,10.47,"5.20336301",1.30530,0.04839266,"14.75385","100.55615",,,,,,,,textures/jupiter.jpg,,"",,,,,,,,,,,,,,
-Saturn,9.449,8.552,"9.53707032",2.48446,0.05415060,"92.43194","113.71504",,,,,,,,textures/8k_saturn.jpg,,"",,,,,,,,,,,,,,
-Uranus,4.007,3.929,"19.19126393",0.76986,0.04716771,"170.96424","74.22988",,,,,,,,textures/2k_uranus.jpg,,"",,,,,,,,,,,,,,
-Neptune,3.883,3.829,"30.06896348",1.76917,0.00858587,"44.97135","131.72169",,,,,,,,textures/2k_neptune.jpg,,"",,,,,,,,,,,,,,
+Name,Relative_Ecuatorial_Radius,Relative_Polar_Radius,Mass,"Orbit_semimajor_axis_[UA]",Inclination,Eccentricity,"Argument_of_periapsis","L_ascending_node",Mean_Longitude,Obliquity,Sidereal_rotation_period,Right_Ascension,Declination,Reference_Date,Model,ModelScale,Mesh_[dataset],TextureFile,NormalMap,"bumpMap ",BumpScale,AOMap,AOMapIntensity,displacementMap,displacementScale,displacementBias,emissiveMap,emissiveIntensity,emissiveColor,SpecularMap,claudsTexture,lightMap,roughnessMap,metalnessMap
+Mercury,0.383,0.384,,"0.38709893",7.00487,0.20563593,"77.45645","48.33167",,0.034,1407.6,,,,,,,textures/8k_mercury.jpg,,"",,,,,,,,,,,,,,
+Venus,0.949,0.952,,"0.72333199",3.39471,0.00677323,"131.53298","76.68069",,177.36,-5832.6,,,,,,,textures/4k_venus_atmosphere.jpg,,"",,,,,,,,,,,,,,
+Earth,1,0.99665,,"1.00000011",0.00005,0.01671022,"102.94719","-11.26064",,23.44,23.9345,,,,,,,textures/earth_blue_NASA_2.jpg,textures/earth_normal_2048.jpg,"",,,,,,,,,,textures/earth_specular_2048_g.jpg,textures/8k_earth_clouds.jpg,,,
+Mars,0.532,0.531,,"1.52366231",1.85061,0.09341233,"336.04084","49.57854",,25.19,24.6229,,,,,,,textures/mars.jpg,,"",,,,,,,,,,,,,,
+Jupiter,11.209,10.47,,"5.20336301",1.30530,0.04839266,"14.75385","100.55615",,3.13,9.9250,,,,,,,textures/jupiter.jpg,,"",,,,,,,,,,,,,,
+Saturn,9.449,8.552,,"9.53707032",2.48446,0.05415060,"92.43194","113.71504",,26.73,10.656,,,,,,,textures/8k_saturn.jpg,,"",,,,,,,,,,,,,,
+Uranus,4.007,3.929,,"19.19126393",0.76986,0.04716771,"170.96424","74.22988",,97.77,-17.24,,,,,,,textures/2k_uranus.jpg,,"",,,,,,,,,,,,,,
+Neptune,3.883,3.829,,"30.06896348",1.76917,0.00858587,"44.97135","131.72169",,28.32,16.11,,,,,,,textures/2k_neptune.jpg,,"",,,,,,,,,,,,,,

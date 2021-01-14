@@ -4,6 +4,7 @@ import { Lensflare, LensflareElement } from './../node_modules/three/examples/js
 import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
 const GRADTORAD = Math.PI/180;
+const axisY = new THREE.Vector3(0,1,0);
 
  var tm = new Date();
  var JulianDateIndex;
@@ -125,7 +126,8 @@ const GRADTORAD = Math.PI/180;
                 const OM = Number(results.data[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
                 const W = Number(results.data[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
                 const A = Number(results.data[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
-                
+                const OB = Number(results.data[i]["Obliquity"]) * GRADTORAD; //Obliquity
+                console.log(OB);
                 const NAM = results.data[i]["Name"]; //Name
                 const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                 const Modelurl = results.data[i]["Model"]; //Model .glb
@@ -148,7 +150,7 @@ const GRADTORAD = Math.PI/180;
                         var planet;
                         if(NAM != "Earth"){ 
                             PlanetMaterial = new THREE.MeshStandardMaterial( {map: texture} );
-                            planet = CreatePlanet( EC, IN, OM, W, A * UA,
+                            planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, OrbitColor,
                                 0.3, PlanetMaterial, MoonsData,
@@ -162,7 +164,7 @@ const GRADTORAD = Math.PI/180;
                                 normalScale: new THREE.Vector2(0.05,0),
                                 roughnessMap:textureSpecular,
                                 roughness:0.5});
-                                planet = CreatePlanet( EC, IN, OM, W, A * UA,
+                                planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, 
                                 OrbitColor, 0.3, PlanetMaterial, 
@@ -180,7 +182,7 @@ const GRADTORAD = Math.PI/180;
                 }
                 else{
                     PlanetMaterial = new THREE.MeshStandardMaterial( {color: 0x4E4E4E} );
-                    const planet = CreatePlanet( EC, IN, OM, W, A * UA,
+                    const planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
                         EcRadius * EarthScale,
                         EarthScale, UA, NAM, OrbitColor,
                         0.3, PlanetMaterial, MoonsData,
@@ -216,13 +218,14 @@ const GRADTORAD = Math.PI/180;
             const EcRadius = Number(MoonsData[i]["Relative_Ecuatorial_Radius"]); //Radius
             
         
-        if ( MoonsData[i]["Moon of"] == planet.name && EcRadius > 0){
+        if ( MoonsData[i]["Moon of"]  + " system" == planet.name && EcRadius > 0){
             
             const EC = Number(MoonsData[i]["Eccentricity"]); //Eccentricity
             const IN = Number(MoonsData[i]["Inclination"]) * GRADTORAD; //Inclination
             const OM = Number(MoonsData[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
             const W = Number(MoonsData[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
             const A = Number(MoonsData[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
+            const OB = Number(MoonsData[i]["Obliquity"]) * GRADTORAD; //Obliquity
             const NAM = MoonsData[i]["Name"]; //Name
             const TextureUrl = MoonsData[i]["TextureFile"]; //Texture
             const NormalMapUrl = MoonsData[i]["NormalMap"]; //NormalMap
@@ -254,7 +257,7 @@ const GRADTORAD = Math.PI/180;
                             });
                         } 
                         
-                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA ,
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB,
                             EcRadius * EarthScale,
                             EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterial,
                             undefined, Modelurl, ModelScale,
@@ -276,7 +279,7 @@ const GRADTORAD = Math.PI/180;
             else{
                 const MoonMaterialColor = new THREE.MeshStandardMaterial( {color: 0xA88052} );
                 
-                planet.add(CreatePlanet( EC, IN, OM, W, A * UA , EcRadius * EarthScale,
+                planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB, EcRadius * EarthScale,
                      EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterialColor,
                     undefined, Modelurl, ModelScale,
                     false));
@@ -307,7 +310,7 @@ export function CreateArtificialSatellites(EarthScale,UA,planet,SatelliteData, O
            
             if (Modelulr != ""){
              
-                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA ,
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB,
                             EcRadius * EarthScale,
                             EarthScale, UA, NAM,
                             OrbitColor, 0.7, undefined,
@@ -417,7 +420,7 @@ export function AddStars(UA, scene){
 
 }
 
-export function SkyReference(radius, scene){
+export function SkyReference(radius, scene, center = new THREE.Vector3(0,0,0)){
     var i;
     let Group = new THREE.Group();
     
@@ -481,6 +484,8 @@ export function SkyReference(radius, scene){
         Group.add(ellipse2); 
     
         }
+        Group.position.set(center.x,center.y,center.z);
+        Group.name = 'reference sphere'
         scene.add(Group);
 }
 
@@ -668,7 +673,7 @@ oscul2.position.y  = Z;
 return oscul2;
 }
 
-function CreatePlanet(EC,IN,OM,W,A,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
+function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
  
  //osculator orbit
  const B = A * Math.sqrt( 1 - Math.pow( EC , 2 ) );
@@ -709,7 +714,12 @@ if (Modelurl != ""){
             
             if (ModelScale == 0) ModelScale = 1;
             gltf.scene.children[0].scale.multiplyScalar(ModelScale);
-            Planet.add( gltf.scene.children[0]);
+            const body = gltf.scene.children[0];
+            body.name = Name;
+            body.UserData = Radius;
+            //orientation of planet polar axis
+            if (OB > 0) OB = body.rotation.x = OB;
+            Planet.add(body);
         },
 
         // called while loading is progressing
@@ -729,17 +739,22 @@ if (Modelurl != ""){
 }
 else{
 
-  const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 200, 200);
-  const body = new THREE.Mesh(geometryPlanet, PlanetMaterial)
-  body.name = "bodyOf" + Name;
-  Planet.add(body);
+    const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 200, 200);
+    const body = new THREE.Mesh(geometryPlanet, PlanetMaterial)
+    body.name = Name;
+    body.UserData = Radius;
+    //orientation of planet polar axis
+    if (OB > 0) OB = body.rotation.x = OB;
+
+    Planet.add(body);
 }
+
 
   const r = Orbit_Line.getPoint(t);
   Planet.position.set(r.x,r.y,r.z);
-  Planet.rotation.x = -90 / 180 * Math.PI ;
-  Planet.rotation.y = 180 / 180 * Math.PI ;
-  Planet.name = Name;
+  Planet.rotation.x = 90 / 180 * Math.PI ;
+  
+  Planet.name = Name + " system";
 
   if (Name == "Saturn"){
    const ring = CreateRing(Radius);
@@ -763,14 +778,27 @@ else{
     Atmos.position.set(Planet.position.x,Planet.position.y,Planet.position.z);
     Atmos.rotation.x = -90 / 180 * Math.PI ;
     Atmos.rotation.y = 180 / 180 * Math.PI ;
-    Atmos.name = "Atmos" + Name;
+    Atmos.name =  Name + " atmosphere";
     Group.add(Atmos);
   }
+  
+  //rotate group
+  Group.rotation.x = -90 * GRADTORAD;
+  Group.rotation.y = 0;
+  Group.rotation.z = 90 * GRADTORAD;
+  Group.rotateOnWorldAxis(axisY, OM); //longitude of ascending node
+  Group.rotation.z += W; //Argument of periapsis
 
-  Group.rotation.x = 90 / 180 * Math.PI ;
-  Group.rotation.z = -W - OM ; //- 90 / 180* Math.PI // aRotation argument of periapsis
-  Group.rotateOnAxis(new THREE.Vector3(Math.cos(OM),Math.sin(OM),0),IN); //Inclinación al rededor del eje de nodos
+  const dirNodes = new THREE.Vector3(Math.sin(OM),0,Math.cos(OM));
+  dirNodes.normalize();
+  Group.rotateOnWorldAxis(dirNodes, IN); //Inclination
+
+
+  //if (lineOfNodes) lineOfNodes.setDirection(dirNodes);                                
+  //lineOfNodes.setLength(1);
+  
   Group.name = "System" + Planet.name
+
 return Group;       
 }
 

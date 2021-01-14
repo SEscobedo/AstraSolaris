@@ -1,31 +1,29 @@
-# AstraSolaris3D
-Modelo virtual del Sistema Solar
+# AstraSolaris
+Solar system virtual 3d model.
 
-## Objetivos
-Este proyecto intenta crear un modelo del sistema solar científicamente preciso y lo más completo posible.
-El modelo contiene una representación fidedigna de las siguentes listas de objetos:
+## Objetives
+This project attempts to create a scientifically accurate model of the solar system that is as complete as possible.
+The model contains a representation of the following lists of objects:
 
-1. El Sol
-2. Planetas
-3. Planetas enanos y asteroides
-3. Satélites (lunas)
-4. Cuerpos menores.
-  a. Asteroides
-  b. Cometas
-  c. Objetos del cinturón de Kuiper
-  d. Meteoroides
+1. The Sun
+2. Planets
+3. Dwarf planets
+3. Satellites (moons)
+4. Minor bodies.
+  a. Asteroids
+  b. Comets
+  c. Kuiper belt objects
+  d. Meteoroids
+5. Artificial satellites and probes.
 
-Además de estos, se modelarán otros fenómenos como los capos magnéticos planetarios, y las estrellas cercanas.
+In addition to these, other phenomena such as planetary magnetic fields, and nearby stars, will be modeled.
 
-Este repositorio contiene dos archivos por cada una de las categorías mostradas, uno con la terminación run y otro con la terminación info. (p ej. dwarf_planets_run.csv y dwarf_planets_info.csv). El archivo _run_ contiene la información necesaria para que el motor gráfico de Astra Solaris pueda generar el objeto dentro del escenario 3D, mientras que el archivo _info_ contiene la información que será mostrada al los usuarios relativa a ese objeto.
+This repository contains two files for each of the categories shown, one with the ending run.csv and the other with the ending info.csv (eg dwarf_planets_run.csv and dwarf_planets_info.csv). The _run_ file contains the information necessary for the Astra Solaris graphics engine to be able to generate the object within the 3D model, while the _info_ file contains the information that will be shown to the users relative to that object.
 
-La carpeta apps contiene el código fuente de las funciones utilizadas para fines específicos (simulación de efectos físicos, interpretación de instrucciones especiales, generación de geometría de referencia, etc.) Información más específica sobre estas funciones se puede contrar en los documentos wiki.
+The apps folder contains the source code of the functions used for specific purposes (simulation of physical effects, interpretation of special instructions, generation of reference geometry, etc.). More specific information about these functions will be found in wiki documents.
 
-La versión de prueba del modelo se encuentra en en www.astrasolaris.org/solarsystem
-
-## Cómo colaborar
-
-Las modificaciones a los archivos se pueden hacer directamente en la plataforma o enviándolas desde un reposiorio local. Deben hacerse a la rama Develop. Después de ser revisadas, cada cierto tiempo se hará la fusión de la rama Develop a la rama Master, y los cambios quedarán disponibles en el modelo en línea.
+The on-line access to the main model can be found at www.astrasolaris.org/solarsystem
+For more information you can visit www.astrasolaris.org
 
 
 

@@ -1,6 +1,6 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-import * as MC from './model_constructor.js';
+import * as MC from './model_constructor1.js';
 import {PostProcessing, UpdatePostProcessingEffect, CloseGui} from './effects.js';
 import * as GE from './geometry_editor.js';
 
@@ -323,21 +323,25 @@ export function CommandExecute(COMMAND){
     cameraControls.getPosition(InitialPoint);
     GE.InitLineEditor(scene, camera, renderer, document, cameraControls, escala, InitialPoint);
     LineEditing = true;
-    response = "\r\n line editor opened";  
+    response = "\r\n spline editor opened";  
 
     } else if ( COMMAND == "close spline editor") {
     GE.CloseLineEditor();
     LineEditing = false;
-    response = "\r\n line editor opened";  
-      
-    } else if ( COMMAND == "hide earth atmosphere") {
-        scene.getObjectByName('AtmosEarth').visible = false;
-        response = "\r\n earth atmosphere hidden";  
-      
-    } else if ( COMMAND == "show earth atmosphere") {
-        scene.getObjectByName('AtmosEarth').visible = true;
-        response = "\r\n earth atmosphere shown";  
+    response = "\r\n spline editor opened";  
+    
+    } else if ( COMMAND == "create reference sphere") {
 
+        const sph = scene.getObjectByName('reference sphere');
+        if (sph == undefined){
+            MC.SkyReference(100*UA,scene);
+            response = "\r\n reference sphere created";  
+        }
+        else{
+            sph.visible = true;
+            response = "\r\n reference sphere already existed: shown.";  
+        }
+      
     } else if ( COMMAND == "hide venus atmosphere") {
         const NewVenusSurface = new THREE.TextureLoader().load('textures/8k_venus_surface.jpg');
         scene.getObjectByName('Venus').material = new THREE.MeshStandardMaterial({map: NewVenusSurface});
@@ -424,7 +428,9 @@ export function CommandExecute(COMMAND){
         const SplitArray = COMMAND.split(" ");
         var Object;
         if (SplitArray.length > 1) {
-            Object = scene.getObjectByName(SplitArray[1]);
+            SplitArray.shift();
+            const ObjectName = SplitArray.join(" ");
+            Object = scene.getObjectByName(ObjectName);
             if (Object != undefined){
                 Object.visible = false;
                 response =  "\r\n" + Object.name + " hiden"; 
@@ -440,7 +446,9 @@ export function CommandExecute(COMMAND){
         const SplitArray = COMMAND.split(" ");
         var Object;
         if (SplitArray.length > 1) {
-            Object = scene.getObjectByName(SplitArray[1]);
+            SplitArray.shift();
+            const ObjectName = SplitArray.join(" ");
+            Object = scene.getObjectByName(ObjectName);
             if (Object != undefined){
                 Object.visible = true;
                 response =  "\r\n" + Object.name + " shown"; 
