@@ -1,6 +1,6 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
-import * as MC from './model_constructor1.js';
+import * as MC from './model_constructor.js';
 import {PostProcessing, UpdatePostProcessingEffect, CloseGui} from './effects.js';
 import * as GE from './geometry_editor.js';
 
