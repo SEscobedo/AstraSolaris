@@ -3,8 +3,10 @@ import * as THREE from './../node_modules/three/build/three.module.js';
 import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
 import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
+
 const GRADTORAD = Math.PI/180;
 const axisY = new THREE.Vector3(0,1,0);
+const origin = new THREE.Vector3(0,0,0);
 
  var tm = new Date();
  var JulianDateIndex;
@@ -127,7 +129,7 @@ const axisY = new THREE.Vector3(0,1,0);
                 const W = Number(results.data[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
                 const A = Number(results.data[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
                 const OB = Number(results.data[i]["Obliquity"]) * GRADTORAD; //Obliquity
-                console.log(OB);
+    
                 const NAM = results.data[i]["Name"]; //Name
                 const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                 const Modelurl = results.data[i]["Model"]; //Model .glb
@@ -698,7 +700,49 @@ function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,Pla
   // Create the final object to add to the scene
   var oscul = new THREE.Line( geometryOrbit, materialOrbit );
   oscul.name = "OrbitOf" + Name;
-  
+
+  //Vectors of orbital parameters
+  const zeroPoint = Orbit_Line.getPoint(0)
+  const p = new THREE.Vector3(zeroPoint.x,zeroPoint.y,zeroPoint.z);
+  const dis = p.distanceTo(origin);
+  p.normalize();
+  const periapsisVector = new THREE.ArrowHelper(p,origin,dis,0xffff);
+  periapsisVector.name = Name + " orbit periapsis";
+  periapsisVector.visible = false;
+  oscul.add(periapsisVector);
+
+  //NodeLines
+  const nodes = new THREE.Vector3( Math.sin(OM),Math.cos(OM),0);
+  nodes.normalize();
+  const nodesVector = new THREE.ArrowHelper(nodes,origin,A,0xBfff);
+  nodesVector.name = Name + " orbit line of nodes";
+  nodesVector.visible = false;
+  oscul.add(nodesVector);
+    
+    //orbit interior
+    var path = new THREE.Shape();
+    path.absellipse(f,0,A,B,0, Math.PI*2, false,0);
+    var Intgeometry = new THREE.ShapeBufferGeometry( path );
+    var Intmaterial = new THREE.MeshBasicMaterial( { color: 0x59d1c1} );
+    var ellipse = new THREE.Mesh( Intgeometry, Intmaterial );
+    ellipse.visible = false;
+    ellipse.name = Name + " orbit plane";
+    oscul.add(ellipse);
+
+    //orbit plane
+    const OrbitPlane =  new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), 0 );
+    const helper = new THREE.PlaneHelper( OrbitPlane, 10*Radius, 0xffff00 );
+    helper.name = Name + " day plane";
+    helper.visible = false;
+    oscul.add(helper);
+    helper.updateMatrixWorld();
+    //grid helper
+    
+    const gridHelper = new THREE.GridHelper( 100*Radius, 100);
+    gridHelper.name = Name + " orbit grid";
+    gridHelper.rotation.x = 90 * GRADTORAD;
+    gridHelper.visible = false;
+    oscul.add( gridHelper );
 
   //Planet (moon, object)
   const Planet = new THREE.Group();
@@ -718,7 +762,11 @@ if (Modelurl != ""){
             body.name = Name;
             body.UserData = Radius;
             //orientation of planet polar axis
-            if (OB > 0) OB = body.rotation.x = OB;
+            if (OB > 0) OB = body.rotation.z = OB;
+            const polaraxis = new THREE.ArrowHelper(axisY,body.position,2*Radius,0xffff);
+            polaraxis.name = Name + " polar axis";
+            polaraxis.visible = false;
+            body.add(polaraxis);
             Planet.add(body);
         },
 
@@ -744,7 +792,19 @@ else{
     body.name = Name;
     body.UserData = Radius;
     //orientation of planet polar axis
-    if (OB > 0) OB = body.rotation.x = OB;
+    if (OB > 0) OB = body.rotation.z = OB;
+    console.log(Name + OB);
+    const polaraxis = new THREE.ArrowHelper(axisY,body.position,2*Radius,0xffff);
+    polaraxis.name = Name + " polar axis";
+    polaraxis.visible = false;
+    body.add(polaraxis);
+
+    if (Atmosphere === true){
+        const geometryAtmos = new THREE.SphereBufferGeometry( Radius + 0.001 * Radius, 100, 100 );
+        const Atmos = new THREE.Mesh(geometryAtmos, AtmosMaterial);
+        Atmos.name =  Name + " atmosphere";
+        body.add(Atmos);
+      }
 
     Planet.add(body);
 }
@@ -752,13 +812,15 @@ else{
 
   const r = Orbit_Line.getPoint(t);
   Planet.position.set(r.x,r.y,r.z);
-  Planet.rotation.x = 90 / 180 * Math.PI ;
+  gridHelper.position.set(r.x,r.y,r.z);
+  helper.position.set(r.x,r.y,r.z);
+  Planet.rotation.x = 90 * GRADTORAD;
   
   Planet.name = Name + " system";
 
   if (Name == "Saturn"){
    const ring = CreateRing(Radius);
-  // ring.rotation.x = -5 / 180 * Math.PI ;
+   //ring.rotation.x = -5 / 180 * Math.PI ;
    Planet.add(ring);
   }
 
@@ -772,15 +834,7 @@ else{
   Group.add(Planet);
   Group.add(oscul);
 
-  if (Atmosphere === true){
-    const geometryAtmos = new THREE.SphereBufferGeometry( Radius + 0.001 * Radius, 100, 100 );
-    const Atmos = new THREE.Mesh(geometryAtmos, AtmosMaterial);
-    Atmos.position.set(Planet.position.x,Planet.position.y,Planet.position.z);
-    Atmos.rotation.x = -90 / 180 * Math.PI ;
-    Atmos.rotation.y = 180 / 180 * Math.PI ;
-    Atmos.name =  Name + " atmosphere";
-    Group.add(Atmos);
-  }
+  
   
   //rotate group
   Group.rotation.x = -90 * GRADTORAD;
@@ -804,32 +858,33 @@ return Group;
 
 export function SolarSystemUpdate(scene, camera){
     // Rotate cube (Change values to change speed)
-        
+    var tm =  Date.now();    
     scene.getObjectByName("Sun").rotation.y += 0.0005;
     scene.getObjectByName("crown").lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
+    
+    const mercury = scene.getObjectByName("Mercury");
+    if (mercury != undefined){
+         
+         mercury.rotation.y = 360/(24*60*60*1000) * tm / 58.785;
+    }
+    
+    const jupiter = scene.getObjectByName("Jupiter");
+    if (jupiter != undefined){
+         
+         jupiter.rotation.y = 360/(24*60*60*1000) * tm / 0.414;
 
-    //mercury.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / (1440 * 176);
-    //venus.rotation.y -= 0.001;
-
-    //const desfase = 3.2; //desfase resepcto a la hora local
-    //earth.rotation.y = (tm.getHours() +  60 * tm.getMinutes()) *  2 * Math.PI / 1440 + desfase;
-    //earthAtmos.rotation.y += 0.00005;
+    }
+    
     const earth = scene.getObjectByName("Earth");
     const moon = scene.getObjectByName("Moon");
     if (earth != undefined && moon != undefined) {
+
+        earth.rotation.y = 360/(24*60*60*1000) * tm;
         moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
-        moon.rotation.y = -80 / 180 * Math.PI ;
+        moon.rotation.y = 90 * GRADTORAD;
+
     }
 
-    //mars.rotation.y += 0.001;
-    //marsAtmos.rotation.y += 0.001;
-
-    //scene.getObjectByName("Jupiter").rotation.y += 0.001;
-    //saturn.rotation.y += 0.001;
-    //ring.rotation.x += -0.01;
-
-    //uranus.rotation.y += 0.001;
-    //neptune.rotation.y += 0.001;
 }
 
 function load_papa_parse()
