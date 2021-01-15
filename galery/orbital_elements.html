@@ -63,8 +63,10 @@
                 Longitude_of_ascending_node: 80,
                 Inclination: 30,
                 Mean_Anomaly: 0.5,
+                Background_Color : 0x16161a
                 };
                 
+                scene = new THREE.Scene();
                 a = params.Semimajor_axis;
                 e = params.Eccentricity;
                 n = params.Longitude_of_ascending_node;
@@ -97,6 +99,9 @@
                     i = value;
                     ElementsUpdate();
                 });
+                gui.addColor( params, 'Background_Color').onChange( function ( value ) {
+                    scene.background = new THREE.Color( value );
+                });
                 gui.open();
 
 				container = document.createElement( 'div' );
@@ -109,7 +114,7 @@
 
 				cameraTarget = new THREE.Vector3( 0, 0, 0 );
 
-				scene = new THREE.Scene();
+				
 				scene.background = new THREE.Color( 0x16161a );
 				scene.fog = new THREE.Fog( 0x72645b, 0.05, 70 );
 
