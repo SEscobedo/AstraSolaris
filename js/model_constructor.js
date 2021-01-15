@@ -216,7 +216,7 @@ const origin = new THREE.Vector3(0,0,0);
  }
  
  function CreateSatellitesOf(EarthScale,UA,planet, MoonsData, OrbitColor =  0x3E4E4E){
-    console.log("Crating moons of " + planet.name);
+    console.log("Creating moons of " + planet.name);
     
     for(var i=0; i < MoonsData.length ; i++){
             
