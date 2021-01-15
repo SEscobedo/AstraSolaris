@@ -232,10 +232,13 @@ const origin = new THREE.Vector3(0,0,0);
             const OB = Number(MoonsData[i]["Obliquity"]) * GRADTORAD; //Obliquity
             const RefPL = MoonsData[i]["Plane_of_reference"]; //Plane of reference
             const NAM = MoonsData[i]["Name"]; //Name
-            const TextureUrl = MoonsData[i]["TextureFile"]; //Texture
-            const NormalMapUrl = MoonsData[i]["NormalMap"]; //NormalMap
+            const TextureUrl = MoonsData[i]["TextureFile"]; 
+            const NormalMapUrl = MoonsData[i]["NormalMap"]; 
+            const DisplacementMap = MoonsData[i]["displacementMap"]; 
+            const dispScale = Number(MoonsData[i]["displacementScale"]); 
+            const dispBias = Number(MoonsData[i]["displacementBias"]); 
             const Modelurl = MoonsData[i]["Model"]; //Model .glb
-            const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model .glb;
+            const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model scale factor
 
             var ParentObliquity;
             
@@ -260,7 +263,17 @@ const origin = new THREE.Vector3(0,0,0);
                             loaderNormal.load(NormalMapUrl, function (NormalTexture) {
                                 NormalTexture.needsUpdate = true;
                                 MoonMaterial.normalMap =  NormalTexture;
-                                MoonMaterial.normalScale = new THREE.Vector2(0.05,0.05)
+                                MoonMaterial.normalScale = new THREE.Vector2(0.05,0.05);
+                            });
+                        } 
+
+                        if (DisplacementMap != ""){
+                            const loaderDisp = new THREE.TextureLoader();
+                            loaderDisp.load(DisplacementMap, function (DispTexture) {
+                                DispTexture.needsUpdate = true;
+                                MoonMaterial.displacementMap =  DispTexture;
+                                MoonMaterial.displacementScale = dispScale;
+                                MoonMaterial.displacementBias = dispBias;
                             });
                         } 
                         
@@ -275,7 +288,7 @@ const origin = new THREE.Vector3(0,0,0);
                     },
                     undefined,
                     function ( err ) {
-                        console.error( 'An error happened.' );
+                        console.error( 'An error happened:' + err );
                     }
                 );
 
