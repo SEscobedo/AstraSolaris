@@ -469,6 +469,7 @@ export function CommandExecute(COMMAND){
     var file = document.getElementById("file").files[0];
 
     //scene.add(GE.LoadXYZ(file));*/
+
     response = "\r\n not implemented fucntion";
         
     } else {
@@ -479,17 +480,18 @@ export function CommandExecute(COMMAND){
 }
 
 function GoPlanet(object, transition = true){
-
+       
         var pos = new THREE.Vector3(); 
         object.getWorldPosition(pos);
-        
+       
         cameraControls.setTarget(
             pos.x, 
             pos.y, 
             pos.z, 
             transition
         );
-        var d = object.UserData;
+        var d = object.UserData.Radius;
+       
         if (object.name == 'Sun') d = d * 5;
         const l = pos.distanceTo(camera.position) - (d * 2.5 + escala * 2.5);
         cameraControls.dolly(l, transition );

@@ -5,7 +5,10 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
 
 
 const GRADTORAD = Math.PI/180;
+const MILISECARC = 360/(24*60*60*1000);
 const axisY = new THREE.Vector3(0,1,0);
+const axisX = new THREE.Vector3(1,0,0);
+//const axisZ = new THREE.Vector3(0,0,1);
 const origin = new THREE.Vector3(0,0,0);
 
  var tm = new Date();
@@ -54,7 +57,7 @@ const origin = new THREE.Vector3(0,0,0);
     const sun = new THREE.Mesh(geometrySun, materialSun);
     const crown = new THREE.Mesh(geometryCrown, materialCrown);
     sun.name = 'Sun';
-    sun.UserData = 109.076 * EarthScale;
+    sun.UserData = {Radius : 109.076 * EarthScale};
     crown.name = 'crown';
     sun.position.set(0,0,0);
     sun.add(crown); 
@@ -152,7 +155,7 @@ const origin = new THREE.Vector3(0,0,0);
                         var planet;
                         if(NAM != "Earth"){ 
                             PlanetMaterial = new THREE.MeshStandardMaterial( {map: texture} );
-                            planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
+                            planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, OrbitColor,
                                 0.3, PlanetMaterial, MoonsData,
@@ -166,7 +169,7 @@ const origin = new THREE.Vector3(0,0,0);
                                 normalScale: new THREE.Vector2(0.05,0),
                                 roughnessMap:textureSpecular,
                                 roughness:0.5});
-                                planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
+                                planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, 
                                 OrbitColor, 0.3, PlanetMaterial, 
@@ -184,7 +187,7 @@ const origin = new THREE.Vector3(0,0,0);
                 }
                 else{
                     PlanetMaterial = new THREE.MeshStandardMaterial( {color: 0x4E4E4E} );
-                    const planet = CreatePlanet( EC, IN, OM, W, A * UA, OB,
+                    const planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                         EcRadius * EarthScale,
                         EarthScale, UA, NAM, OrbitColor,
                         0.3, PlanetMaterial, MoonsData,
@@ -226,15 +229,20 @@ const origin = new THREE.Vector3(0,0,0);
             const IN = Number(MoonsData[i]["Inclination"]) * GRADTORAD; //Inclination
             const OM = Number(MoonsData[i]["L_ascending_node"]) * GRADTORAD; //Longitud of ascending node
             const W = Number(MoonsData[i]["Argument_of_periapsis"]) * GRADTORAD; //Argument of periapsis
-            const A = Number(MoonsData[i]["Orbit_semimajor_axis_[UA]"]); //Semi-major axis
+            const A = Number(MoonsData[i]["Orbit_semimajor_axis_[UA]"]) * UA; //Semi-major axis
             const OB = Number(MoonsData[i]["Obliquity"]) * GRADTORAD; //Obliquity
+            const RefPL = MoonsData[i]["Plane_of_reference"]; //Plane of reference
             const NAM = MoonsData[i]["Name"]; //Name
             const TextureUrl = MoonsData[i]["TextureFile"]; //Texture
             const NormalMapUrl = MoonsData[i]["NormalMap"]; //NormalMap
             const Modelurl = MoonsData[i]["Model"]; //Model .glb
             const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model .glb;
+
+            var ParentObliquity;
             
-       
+            if (RefPL != "ecliptic") ParentObliquity = planet.UserData.Obliquity;
+            else ParentObliquity = 0;
+            
             
            console.log("Texture: " + TextureUrl);
             if (TextureUrl != ""){
@@ -259,7 +267,7 @@ const origin = new THREE.Vector3(0,0,0);
                             });
                         } 
                         
-                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB,
+                        planet.add(CreatePlanet( EC, IN, OM, W, A, OB, ParentObliquity,
                             EcRadius * EarthScale,
                             EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterial,
                             undefined, Modelurl, ModelScale,
@@ -281,7 +289,7 @@ const origin = new THREE.Vector3(0,0,0);
             else{
                 const MoonMaterialColor = new THREE.MeshStandardMaterial( {color: 0xA88052} );
                 
-                planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB, EcRadius * EarthScale,
+                planet.add(CreatePlanet( EC, IN, OM, W, A, OB, ParentObliquity, EcRadius * EarthScale,
                      EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterialColor,
                     undefined, Modelurl, ModelScale,
                     false));
@@ -312,7 +320,7 @@ export function CreateArtificialSatellites(EarthScale,UA,planet,SatelliteData, O
            
             if (Modelulr != ""){
              
-                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB,
+                        planet.add(CreatePlanet( EC, IN, OM, W, A * UA , OB, 0,
                             EcRadius * EarthScale,
                             EarthScale, UA, NAM,
                             OrbitColor, 0.7, undefined,
@@ -675,9 +683,20 @@ oscul2.position.y  = Z;
 return oscul2;
 }
 
-function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
- 
+function CreatePlanet(EC,IN,OM,W,A,OB,ParentOB,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
+//Planet (moon, object)
+const Planet = new THREE.Group();
+
  //osculator orbit
+ const parameters = {
+    Eccentricity: EC,
+    Inclination : IN,
+    SemiMajorAxis: A,
+    Radius : Radius,
+    Obliquity : OB
+ }
+ Planet.UserData = parameters;
+
  const B = A * Math.sqrt( 1 - Math.pow( EC , 2 ) );
  const f = A * -EC;
 
@@ -688,9 +707,11 @@ function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,Pla
         false,            // aClockwise
         0                 // aRotation
     );
+
   var np;
-  if(A > 30) np = 10000;
-  else np = 5000;
+  if(A < 30) np = 5000;
+  else if(A < 60) np = 10000;
+  else np = 20000;
 
   var points = Orbit_Line.getPoints( np );
   var geometryOrbit = new THREE.BufferGeometry().setFromPoints( points );
@@ -719,7 +740,7 @@ function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,Pla
   nodesVector.visible = false;
   oscul.add(nodesVector);
     
-    //orbit interior
+   /* //orbit interior
     var path = new THREE.Shape();
     path.absellipse(f,0,A,B,0, Math.PI*2, false,0);
     var Intgeometry = new THREE.ShapeBufferGeometry( path );
@@ -727,25 +748,24 @@ function CreatePlanet(EC,IN,OM,W,A,OB,Radius,EarthScale,UA,Name,OrbitColor,t,Pla
     var ellipse = new THREE.Mesh( Intgeometry, Intmaterial );
     ellipse.visible = false;
     ellipse.name = Name + " orbit plane";
-    oscul.add(ellipse);
+   // oscul.add(ellipse);*/
 
-    //orbit plane
+    //orbit day plane
     const OrbitPlane =  new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), 0 );
     const helper = new THREE.PlaneHelper( OrbitPlane, 10*Radius, 0xffff00 );
     helper.name = Name + " day plane";
     helper.visible = false;
-    oscul.add(helper);
+   // oscul.add(helper);
     helper.updateMatrixWorld();
     //grid helper
     
-    const gridHelper = new THREE.GridHelper( 100*Radius, 100);
+    /*const gridHelper = new THREE.GridHelper( 100*Radius, 100);
     gridHelper.name = Name + " orbit grid";
     gridHelper.rotation.x = 90 * GRADTORAD;
     gridHelper.visible = false;
-    oscul.add( gridHelper );
-
-  //Planet (moon, object)
-  const Planet = new THREE.Group();
+    //oscul.add( gridHelper );*/
+        
+ 
 
 if (Modelurl != ""){
     //load Model
@@ -760,9 +780,9 @@ if (Modelurl != ""){
             gltf.scene.children[0].scale.multiplyScalar(ModelScale);
             const body = gltf.scene.children[0];
             body.name = Name;
-            body.UserData = Radius;
+            body.UserData = parameters;
             //orientation of planet polar axis
-            if (OB > 0) OB = body.rotation.z = OB;
+            if (OB > 0) OB = body.rotation.x = OB;
             const polaraxis = new THREE.ArrowHelper(axisY,body.position,2*Radius,0xffff);
             polaraxis.name = Name + " polar axis";
             polaraxis.visible = false;
@@ -790,10 +810,17 @@ else{
     const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 200, 200);
     const body = new THREE.Mesh(geometryPlanet, PlanetMaterial)
     body.name = Name;
-    body.UserData = Radius;
+    body.UserData = parameters;
+
     //orientation of planet polar axis
-    if (OB > 0) OB = body.rotation.z = OB;
-    console.log(Name + OB);
+    if (OB > 0){ 
+        body.rotation.x = OB;
+        if (Name == "Saturn"){
+            const ring = CreateRing(Radius);
+            ring.rotation.x = OB;
+            Planet.add(ring);
+           }
+    }
     const polaraxis = new THREE.ArrowHelper(axisY,body.position,2*Radius,0xffff);
     polaraxis.name = Name + " polar axis";
     polaraxis.visible = false;
@@ -812,20 +839,12 @@ else{
 
   const r = Orbit_Line.getPoint(t);
   Planet.position.set(r.x,r.y,r.z);
-  gridHelper.position.set(r.x,r.y,r.z);
+  //gridHelper.position.set(r.x,r.y,r.z);
   helper.position.set(r.x,r.y,r.z);
   Planet.rotation.x = 90 * GRADTORAD;
   
   Planet.name = Name + " system";
 
-  if (Name == "Saturn"){
-   const ring = CreateRing(Radius);
-   //ring.rotation.x = -5 / 180 * Math.PI ;
-   Planet.add(ring);
-  }
-
-
-  Planet.UserData = Radius;
 
   //Add moons (satellites) of the planet
   if (MoonsData != undefined) CreateSatellitesOf(EarthScale,UA,Planet,MoonsData);
@@ -834,7 +853,6 @@ else{
   Group.add(Planet);
   Group.add(oscul);
 
-  
   
   //rotate group
   Group.rotation.x = -90 * GRADTORAD;
@@ -846,12 +864,15 @@ else{
   const dirNodes = new THREE.Vector3(Math.sin(OM),0,Math.cos(OM));
   dirNodes.normalize();
   Group.rotateOnWorldAxis(dirNodes, IN); //Inclination
+  Group.rotateOnWorldAxis(axisX, ParentOB); //Correction for Laplace Plane
+  
 
 
   //if (lineOfNodes) lineOfNodes.setDirection(dirNodes);                                
   //lineOfNodes.setLength(1);
-  
+
   Group.name = "System" + Planet.name
+
 
 return Group;       
 }
@@ -865,13 +886,14 @@ export function SolarSystemUpdate(scene, camera){
     const mercury = scene.getObjectByName("Mercury");
     if (mercury != undefined){
          
-         mercury.rotation.y = 360/(24*60*60*1000) * tm / 58.785;
+         mercury.rotation.y = MILISECARC * tm / 58.785;
+
     }
     
     const jupiter = scene.getObjectByName("Jupiter");
     if (jupiter != undefined){
          
-         jupiter.rotation.y = 360/(24*60*60*1000) * tm / 0.414;
+         jupiter.rotation.y = MILISECARC * tm / 0.414;
 
     }
     

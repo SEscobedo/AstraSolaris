@@ -1,4 +1,4 @@
-import * as THREE from './../node_modules/three/build/three.module.js';
+import * as THREE from 'three/build/three.module';
 
 export function GetPosFromOrbitElem(t,a0,adot, L0, Ldot, b, c, s, f){
     // month is zero-indexed, so 0 is January
