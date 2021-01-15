@@ -5,7 +5,7 @@ import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoa
 
 
 const GRADTORAD = Math.PI/180;
-const MILISECARC = 360/(24*60*60*1000);
+const MILISECARC = Math.PI * 2 / (24*60*60*1000);
 const axisY = new THREE.Vector3(0,1,0);
 const axisX = new THREE.Vector3(1,0,0);
 //const axisZ = new THREE.Vector3(0,0,1);
@@ -158,7 +158,7 @@ const origin = new THREE.Vector3(0,0,0);
                             planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, OrbitColor,
-                                0.3, PlanetMaterial, MoonsData,
+                                0.75, PlanetMaterial, MoonsData,
                                 false);
                         }
                         else{
@@ -168,11 +168,11 @@ const origin = new THREE.Vector3(0,0,0);
                                 normalMap:textureNormal,
                                 normalScale: new THREE.Vector2(0.05,0),
                                 roughnessMap:textureSpecular,
-                                roughness:0.5});
+                                roughness:0.75});
                                 planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                                 EcRadius * EarthScale,
                                 EarthScale, UA, NAM, 
-                                OrbitColor, 0.3, PlanetMaterial, 
+                                OrbitColor, 0.5, PlanetMaterial, 
                                 MoonsData, Modelurl, ModelScale, 
                                 true, AtmosMaterial);
                         }
@@ -190,7 +190,7 @@ const origin = new THREE.Vector3(0,0,0);
                     const planet = CreatePlanet( EC, IN, OM, W, A * UA, OB, 0,
                         EcRadius * EarthScale,
                         EarthScale, UA, NAM, OrbitColor,
-                        0.3, PlanetMaterial, MoonsData,
+                        0.5, PlanetMaterial, MoonsData,
                         false);
                         scene.add(planet);
                 }
@@ -216,7 +216,6 @@ const origin = new THREE.Vector3(0,0,0);
  }
  
  function CreateSatellitesOf(EarthScale,UA,planet, MoonsData, OrbitColor =  0x3E4E4E){
-    console.log("Creating moons of " + planet.name);
     
     for(var i=0; i < MoonsData.length ; i++){
             
@@ -244,7 +243,6 @@ const origin = new THREE.Vector3(0,0,0);
             else ParentObliquity = 0;
             
             
-           console.log("Texture: " + TextureUrl);
             if (TextureUrl != ""){
                 const loader = new THREE.TextureLoader();
 
@@ -261,7 +259,6 @@ const origin = new THREE.Vector3(0,0,0);
                             const loaderNormal = new THREE.TextureLoader();
                             loaderNormal.load(NormalMapUrl, function (NormalTexture) {
                                 NormalTexture.needsUpdate = true;
-                                console.log("Normal Map: " + NormalMapUrl);
                                 MoonMaterial.normalMap =  NormalTexture;
                                 MoonMaterial.normalScale = new THREE.Vector2(0.05,0.05)
                             });
@@ -302,7 +299,6 @@ const origin = new THREE.Vector3(0,0,0);
 }
 
 export function CreateArtificialSatellites(EarthScale,UA,planet,SatelliteData, OrbitColor = 0x2E4E4E){
-    console.log("Crating Satellites of " + planet.name);
     
     for(var i=0; i < MoonsData.length ; i++){
         
@@ -529,125 +525,6 @@ export function CreateReferenceGeometry(UA, scene){
     scene.add( lineEquinoxZ );
 }
 
-/*function LoadEpheme(item, index){
-    Papa.parse(item, {
-        download: true,
-        dynamicTyping: false,
-        complete: function(results) {
-            //console.log(results);
-            //colocar a cada planeta en su correspondiente lugar
-            //Cordenadas cartesianas
-            const x = Number(results.data[JulianDateIndex]["2"])*UA;
-            const y = Number(results.data[JulianDateIndex]["4"])*UA;
-            const z = Number(results.data[JulianDateIndex]["3"])*UA;
-            //Parámetros orbitales
-            const EC = Number(results.data[JulianDateIndex + 1]["2"]);
-            const IN = Number(results.data[JulianDateIndex + 1]["4"]) * Math.PI / 180;
-            const OM = Number(results.data[JulianDateIndex + 1]["5"]) * Math.PI / 180;
-            const W = Number(results.data[JulianDateIndex + 1]["6"]) * Math.PI / 180 ;
-            const A = Number(results.data[JulianDateIndex + 1]["11"] * UA);
-
-            if (index == 0){
-               
-                sun.position.set(0,0,0);
-                crown.position.set(0,0,0);
-               
-            }else if (index == 1){
-               console.log('mercury');
-               console.log(results.data[JulianDateIndex]["1"]);
-               console.log(results);
-
-                mercury.position.set(x,y,z);
-                console.log(mercury.position);
-                console.log(JulianDateIndex);
-            }else if (index == 2){
-                console.log('venus');
-                
-                 venus.position.set(x,y,z);
-                 console.log(venus.position);
-            }else if (index == 3){
-                console.log(index + " earth");
-                earth.position.set(x,y,z);
-                earthAtmos.position.set(x,y,z);
-                
-                console.log(earth.position);
-            }else if (index == 9){
-                console.log(index + " moon");
-                console.log(results);
-                moon.position.set(x,y,z);
-                moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
-                moon.rotation.x += Math.PI/2;
-                console.log(moon.position);   
-            }else if (index == 4){
-                console.log(index);
-                mars.position.set(x,y,z);
-                console.log(mars.position);    
-            }else if (index == 5){
-                console.log(index);
-                jupiter.position.set(x,y,z);
-                console.log(jupiter.position);
-            }else if (index == 6){
-                console.log(index);
-                saturn.position.set(x,y,z);
-                ring.position.set(x,y,z);
-                console.log(saturn.position); 
-            }else if (index == 7){
-                console.log(index);
-                uranus.position.set(x,y,z);
-                console.log(uranus.position);   
-            }else if (index == 8){
-                console.log(index);
-                neptune.position.set(x,y,z);
-                console.log(neptune.position);    
-
-            }else if (index == 20){
-                const xc = Number(results.data[JulianDateIndex + 17]["2"])*UA;
-                const yc = Number(results.data[JulianDateIndex + 17]["4"])*UA;
-                const zc = Number(results.data[JulianDateIndex + 17]["3"])*UA;
-                console.log('comet xyz ' +  results.data[JulianDateIndex + 17]["1"]);
-                console.log(results);
-                halley.position.set(xc,yc,zc);
-
-            //ORBITAS OSCULADORAS
-          
-            }else if ((index > 9) && (index < 18)){
-                console.log(results.data[JulianDateIndex + 1]["1"]);
-                CreateOsculOrbit(0,0,0,EC,IN,OM,W,A);
-
-            }else if ((index == 18) && (index < 19)){
-                //cometa halley
-                const ECc = Number(results.data[JulianDateIndex + 18]["2"]);
-                const INc = Number(results.data[JulianDateIndex + 18]["4"]) * Math.PI / 180;
-                const OMc = Number(results.data[JulianDateIndex + 18]["5"]) * Math.PI / 180;
-                const Wc = Number(results.data[JulianDateIndex + 18]["6"]) * Math.PI / 180 ;
-                const Ac = Number(results.data[JulianDateIndex + 18]["11"] * UA);
-                console.log('comet osc ' + results.data[JulianDateIndex + 18]["1"])
-                console.log(results);
-                CreateOsculOrbit2(0,0,0,ECc,INc,OMc,Wc,Ac);
-
-            }else if (index == 19){
-                  
-            //Parámetros orbitales (centrados el la tierra)
-            const ECm = Number(results.data[JulianDateIndex + 3]["2"]);
-            const INm = Number(results.data[JulianDateIndex + 3]["4"]) * Math.PI / 180;
-            const OMm = Number(results.data[JulianDateIndex + 3]["5"]) * Math.PI / 180;
-            const Wm = Number(results.data[JulianDateIndex + 3]["6"]) * Math.PI / 180 ;
-            const Am = Number(results.data[JulianDateIndex + 3]["11"] * UA);
-
-
-                console.log('moon orbit to create'); 
-                console.log('IN=' + INm + ', OM=' + OMm + 'W' + Wm);
-                CreateOsculOrbit(earth.position.x,earth.position.z, earth.position.y,ECm,INm,OMm,Wm,Am);
-                console.log(results);
-                console.log('moon orbit created');
-
-            }
-            
-            
-        }
-        });
-}*/
-
 export function CreateOsculOrbit2(X,Y,Z,EC,IN,OM,W,A,Name, Color){
  
   //osculator orbit
@@ -670,12 +547,6 @@ oscul2.name = "OrbitOf" + Name;
 oscul2.rotation.x = 90 / 180 * Math.PI ;
 oscul2.rotation.z = -W - OM ; //- 90 / 180* Math.PI // aRotation argument of periapsis
 oscul2.rotateOnAxis(new THREE.Vector3(Math.cos(OM),Math.sin(OM),0),1 * IN); //Inclinación al rededor del eje de nodos
-
-//console.log('OM = ' + OM * 180/ Math.PI);
-//console.log('W = ' + W * 180/Math.PI);
-//
-//console.log('X='+ X/UA + 'Y='+ Y/UA +'Z='+ Z/UA +'IN=' + IN + ', OM=' + OM);
-//console.log('W=' + W + 'A = ' + A /UA);
 
 oscul2.position.x  = X;
 oscul2.position.z  = Y;
@@ -769,7 +640,7 @@ const Planet = new THREE.Group();
 
 if (Modelurl != ""){
     //load Model
-    console.log(Name + " Model url: " + Modelurl);
+
     const loader = new GLTFLoader();
     loader.load(
         Modelurl,
@@ -898,10 +769,12 @@ export function SolarSystemUpdate(scene, camera){
     }
     
     const earth = scene.getObjectByName("Earth");
+    
     const moon = scene.getObjectByName("Moon");
     if (earth != undefined && moon != undefined) {
-
-        earth.rotation.y = 360/(24*60*60*1000) * tm;
+        const earthAtmos = scene.getObjectByName("Earth atmosphere");
+        earth.rotation.y = MILISECARC * tm + 150 * GRADTORAD;
+        earthAtmos.rotation.y = MILISECARC * tm * 17;//just for visual effect
         moon.lookAt(new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z));
         moon.rotation.y = 90 * GRADTORAD;
 
