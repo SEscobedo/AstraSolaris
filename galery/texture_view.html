@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+
+		
+
+		<title>AstraSolaris - Texture viewer</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="./../css/main.css">
+	</head>
+	<body>
+		<div id="info">
+			<h3><a href="https://es.wikipedia.org/wiki/(101955)_Bennu" target="_blank" rel="noopener">Texture viewer</a></h3>
+			<a href="http://www.astrasolaris.org" target="_blank" rel="noopener">AstraSolaris</a>.
+		</div>
+		<input id="myInput" type="file" style="visibility:hidden" />
+		<script type="module">
+
+			import * as THREE from './../node_modules/three/build/three.module.js';
+			import Stats from './../node_modules/three/examples/jsm/libs/stats.module.js';
+            import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+			import * as MC from './../js/model_constructor.js';
+			import CameraControls from './../node_modules/camera-controls/dist/camera-controls.module.js';
+			import { GUI } from './../node_modules/three/examples/jsm/libs/dat.gui.module.js';
+
+
+			let container, stats, EarthRadius, UA, Moon;
+			let camera, cameraTarget, scene, renderer, cameraControls;
+			const clock = new THREE.Clock();
+
+			init();
+			animate();
+
+			function init() {
+				const params = {
+				bumpScale:  0.01,	
+				Rotation: 180,
+				disp_scale: 0.05,
+				disp_bias: 0,
+				NormalX: 0.1,
+				NormalY: 0.1,
+				Background_Color : 0x16161a,
+				loadFile : function() { 
+					document.getElementById('myInput').click();
+					}
+				};
+				const gui = new GUI();
+
+                EarthRadius = 5 //Earth size (refference for all celestial bodies)
+                UA = 23454.8 * EarthRadius //Astronomical Unit (Mean distance from Earth to Sun)
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				//CAMERA
+                camera = new THREE.PerspectiveCamera(
+                60,
+                window.innerWidth/window.innerHeight,
+                0.01,
+                60000*UA
+                );
+                camera.position.set(0,UA,3 * UA);
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x16161a );
+
+				CameraControls.install( { THREE: THREE } );
+
+                //Model
+                MC.AddStars(UA, scene);
+				MC.CreateSun(EarthRadius,scene);
+				CreateRealisticMoon(scene);
+
+				scene.getObjectByName("LensFlare").visible = true;
+
+				gui.add( params, 'Rotation', 0, 360 ).step( 0.1 ).onChange( function ( value ) {
+                    Moon.rotation.y = value * Math.PI / 180;
+				} );
+				gui.add( params, 'bumpScale', 0, 0.5 ).step( 0.001 ).onChange( function ( value ) {
+                    Moon.material.bumpScale = value;
+				} );
+				gui.add( params, 'disp_scale', 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+
+					Moon.material.displacementScale = value;
+					
+				} );
+				gui.add( params, 'disp_bias', 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+
+				Moon.material.displacementBias = value;
+
+				} );
+				gui.add( params, 'NormalX', 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+
+				Moon.material.normalScale.x = value;
+
+				} );
+				gui.add( params, 'NormalY', 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+
+				Moon.material.normalScale.y = value;
+
+				} );
+				gui.addColor( params, 'Background_Color').onChange( function ( value ) {
+                    scene.background = new THREE.Color( value );
+				});
+				gui.add(params, 'loadFile').name('Load texture');
+				
+				gui.open();
+				
+				
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.outputEncoding = THREE.sRGBEncoding;
+
+				renderer.shadowMap.enabled = true;
+
+				 //camera controls
+				cameraControls = new CameraControls( camera, renderer.domElement );
+				cameraControls.dampingFactor = 0.05;
+				cameraControls.draggingDampingFactor=0.25;
+				cameraControls.verticalDragToForward = true;
+
+				var pos = new THREE.Vector3(); 
+				Moon.getWorldPosition(pos);
+				
+				cameraControls.setTarget(
+					pos.x, 
+					pos.y, 
+					pos.z, 
+					true
+				);
+				var d = Moon.UserData.Radius;
+				
+				const l = pos.distanceTo(camera.position) - (d * 2.5);
+				cameraControls.dolly(l, true);
+				
+
+			
+				container.appendChild( renderer.domElement );
+
+				// stats
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function CreateRealisticMoon(scene){
+
+				/*var geometry = new THREE.BoxGeometry(1, 1, 1, 32, 32, 32);
+				for (var i in geometry.vertices) {
+					var vertex = geometry.vertices[i];
+					vertex.normalize().multiplyScalar(0.2725 * EarthRadius);
+				}
+				console.log(geometry.faceVertexUvs);
+				geometry.faces[0].materialIndex = 0;
+				geometry.faces[0].vertexColors = true;
+				//geometry.faces[0].color = 0xfc1c03;*/
+
+				
+				
+				 
+				/*for (var i = 0; i < 6; i++) {
+				var faceMaterial = new THREE.MeshPhongMaterial();
+					var map = THREE.DataTexture(900,900, new THREE.Color(0x000000));
+					addScalarField(map, i, scalarField);
+					map.needsUpdate = true;
+				faceMaterial.map = map; // see github for implementation
+				materialArray.push(faceMaterial);
+				}*/
+			
+
+				//var sphereMaterial = new THREE.MeshFaceMaterial(materialArray);
+				//}
+				
+				
+				const textureMoon = new THREE.TextureLoader().load('./../textures/moon.jpg');
+				const textureNormal = new THREE.TextureLoader().load('./../textures/moon_normal.jpg');
+				const textureDisp = new THREE.TextureLoader().load('./../textures/ldem_16_uint.jpg');
+    			const materialMoon = new THREE.MeshStandardMaterial({
+					map : textureMoon,
+					//normalMap : textureNormal,
+					bumpMap : textureDisp,
+					bumpScale : 0.01,
+					//normalScale : new THREE.Vector2(0.1,0.1),
+					//displacementMap : textureDisp,
+					//displacementScale : 0.05,
+					//displacementBias : 0
+				});
+				
+				//materialMoon.wireframe = true;
+				//materialMoon.vertexColors = true;
+				
+				const geometryMoon = new THREE.SphereBufferGeometry(0.2725 * EarthRadius,100,100);
+				
+				Moon = new THREE.Mesh(geometryMoon, materialMoon);
+				Moon.name = "Moon";
+				Moon.rotation.y =  Math.PI;
+				Moon.UserData = {Radius: 0.2725 * EarthRadius};
+				Moon.position.set(UA,0,0);
+				scene.add(Moon);
+			}
+
+
+			
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				const delta = clock.getDelta();
+				const updated = cameraControls.update( delta );
+				scene.getObjectByName("crown").lookAt(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z));
+				Moon.rotation.y += 0.0005;
+
+				render();
+				stats.update();
+
+
+			}
+
+			function render() {
+
+				const timer = Date.now() * 0.0002;
+
+				renderer.render( scene, camera );
+
+			}
+
+			
+
+		</script>
+	</body>
+</html>

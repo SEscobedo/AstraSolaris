@@ -50,7 +50,7 @@ const origin = new THREE.Vector3(0,0,0);
     const geometrySun = new THREE.SphereBufferGeometry( 109.076 * EarthScale, 100, 100 );
     const geometryCrown = new THREE.PlaneBufferGeometry( 180 * 109.076 * EarthScale, 180 * 109.076 * EarthScale );
     //const textureSun = new THREE.TextureLoader().load('textures/heliographic_negative_bw2.jpg');
-    const textureCrown = new THREE.TextureLoader().load('textures/star_flare.png');
+    const textureCrown = new THREE.TextureLoader().load('./../textures/lensflare/star_flare.png');
     //const materialSun = new THREE.MeshStandardMaterial({emissiveMap : textureSun,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialSun = new THREE.MeshStandardMaterial({color:0xFFFFFF,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialCrown = new THREE.MeshStandardMaterial({emissiveMap : textureCrown, alphaMap:textureCrown, emissive: 0xFFFFFF,emissiveIntensity:1,transparent:true,opacity:1});
@@ -78,7 +78,7 @@ const origin = new THREE.Vector3(0,0,0);
      const textureLoader = new THREE.TextureLoader();
 
      //const textureFlare0 = textureLoader.load( 'textures/lensflare/lensflare0.png' );
-     const textureFlare3 = textureLoader.load( 'textures/lensflare/lensflare3.png' );
+     const textureFlare3 = textureLoader.load( './../textures/lensflare/lensflare3.png' );
 
 
      const lensflare = new Lensflare();
@@ -107,8 +107,6 @@ const origin = new THREE.Vector3(0,0,0);
         complete: function(results) { 
              //Moons data      
              const MoonsData = results.data;
-             console.log(urlMoons);
-            
 
     //Import orbit parameters 
     Papa.parse(urlPlanets, {
@@ -137,6 +135,7 @@ const origin = new THREE.Vector3(0,0,0);
                 const textureUrl = results.data[i]["TextureFile"]; //Texture image of planet
                 const Modelurl = results.data[i]["Model"]; //Model .glb
                 const ModelScale = Number(results.data[i]["ModelScale"]); //Model .glb;
+                
                 
                 var NormalMapUrl, textureNormal, SpecularMapUrl, textureSpecular, claudsTextureUrl, textureClouds
                 if(NAM == "Earth"){
@@ -191,6 +190,7 @@ const origin = new THREE.Vector3(0,0,0);
                         EcRadius * EarthScale,
                         EarthScale, UA, NAM, OrbitColor,
                         0.5, PlanetMaterial, MoonsData,
+                        Modelurl, ModelScale,
                         false);
                         scene.add(planet);
                 }
@@ -234,12 +234,14 @@ const origin = new THREE.Vector3(0,0,0);
             const NAM = MoonsData[i]["Name"]; //Name
             const TextureUrl = MoonsData[i]["TextureFile"]; 
             const NormalMapUrl = MoonsData[i]["NormalMap"]; 
+            const bumpMapUrl = MoonsData[i]["bumpMap"]; 
+            const bumpScale = Number(MoonsData[i]["bumpScale"]); 
             const DisplacementMap = MoonsData[i]["displacementMap"]; 
             const dispScale = Number(MoonsData[i]["displacementScale"]); 
             const dispBias = Number(MoonsData[i]["displacementBias"]); 
             const Modelurl = MoonsData[i]["Model"]; //Model .glb
             const ModelScale = Number(MoonsData[i]["ModelScale"]); //Model scale factor
-
+        
             var ParentObliquity;
             
             if (RefPL != "ecliptic") ParentObliquity = planet.UserData.Obliquity;
@@ -265,7 +267,7 @@ const origin = new THREE.Vector3(0,0,0);
                                 MoonMaterial.normalMap =  NormalTexture;
                                 MoonMaterial.normalScale = new THREE.Vector2(0.05,0.05);
                             });
-                        } 
+                        }
 
                         if (DisplacementMap != ""){
                             const loaderDisp = new THREE.TextureLoader();
@@ -275,15 +277,35 @@ const origin = new THREE.Vector3(0,0,0);
                                 MoonMaterial.displacementScale = dispScale;
                                 MoonMaterial.displacementBias = dispBias;
                             });
-                        } 
+                        }
                         
-                        planet.add(CreatePlanet( EC, IN, OM, W, A, OB, ParentObliquity,
-                            EcRadius * EarthScale,
-                            EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterial,
-                            undefined, Modelurl, ModelScale,
-                            false));
+                        if (bumpMapUrl != ""){
+                            const loaderBump = new THREE.TextureLoader();
+                            
+                            loaderBump.load(bumpMapUrl, function (bumpTexture) {
+                                bumpTexture.needsUpdate = true;
+                                MoonMaterial.bumpMap =  bumpTexture;
+                                MoonMaterial.bumpScale = bumpScale;
+                                planet.add(CreatePlanet( EC, IN, OM, W, A, OB, ParentObliquity,
+                                    EcRadius * EarthScale,
+                                    EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterial,
+                                    undefined, Modelurl, ModelScale,
+                                    false));
+                            });
+                        
+                        } else {
+                            planet.add(CreatePlanet( EC, IN, OM, W, A, OB, ParentObliquity,
+                                EcRadius * EarthScale,
+                                EarthScale, UA, NAM, OrbitColor, 0.7, MoonMaterial,
+                                undefined, Modelurl, ModelScale,
+                                false));
+    
+                            console.log("Creating " + NAM);
+                        }
 
-                        console.log("Creating " + NAM);
+                         
+                        
+                       
                         
                     },
                     undefined,
@@ -570,7 +592,6 @@ return oscul2;
 function CreatePlanet(EC,IN,OM,W,A,OB,ParentOB,Radius,EarthScale,UA,Name,OrbitColor,t,PlanetMaterial, MoonsData, Modelurl, ModelScale, Atmosphere, AtmosMaterial = undefined){
 //Planet (moon, object)
 const Planet = new THREE.Group();
-
  //osculator orbit
  const parameters = {
     Eccentricity: EC,
@@ -691,7 +712,7 @@ if (Modelurl != ""){
 }
 else{
 
-    const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 200, 200);
+    const geometryPlanet = new THREE.SphereBufferGeometry(Radius, 100, 100);
     const body = new THREE.Mesh(geometryPlanet, PlanetMaterial)
     body.name = Name;
     body.UserData = parameters;

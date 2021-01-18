@@ -29,7 +29,8 @@ escala, UA;
         CameraControls.install( { THREE: THREE } );
 
         // Init scene
-	    scene = new THREE.Scene();
+        scene = new THREE.Scene();
+        scene.name = "Solar System";
 	    scene.background = new THREE.Color( 'black' );
 
 
