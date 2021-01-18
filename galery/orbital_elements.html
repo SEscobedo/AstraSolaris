@@ -80,10 +80,10 @@
                     a = value;
                     ElementsUpdate();
                 });*/
-                gui.add( params, 'Eccentricity' , 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+               /* gui.add( params, 'Eccentricity' , 0, 1 ).step( 0.01 ).onChange( function ( value ) {
                     e = value;
                     ElementsUpdate();
-                });
+                });*/
                // gui.add( params, 'Mean_Anomaly' , 0, 360 ).step( 1 ).onChange( function ( value ) {
                //     m = value;
                // });
@@ -328,7 +328,7 @@
 
             
             function ElementsUpdate(){
-                //Orbit.Geometry = undefined;
+               /* //Orbit.Geometry = undefined;
                 const geometry = GetGeometryOrbit(GetOrbitLine(a,e,100));
                 geometry.verticesNeedUpdate = true;
                 geometry.elementsNeedUpdate = true;
@@ -344,7 +344,7 @@
                 Orbit.geometry.dispose();
                 Orbit.geometry = geometry.clone();
                 orbitGroup.add(Orbit);
-                scene.add(orbitGroup);
+                scene.add(orbitGroup);*/
                 
                 //Orbit.updateMatrix();
                 //update orientation
