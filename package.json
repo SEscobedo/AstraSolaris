@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Salvador D. Escobedo",
   "license": "ISC",
   "dependencies": {
     "camera-controls": "^1.25.3",
