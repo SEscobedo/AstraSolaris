@@ -1,5 +1,6 @@
 # AstraSolaris
 ![Node.js CI](https://github.com/SEscobedo/AstraSolaris/workflows/Node.js%20CI/badge.svg)
+
 Solar system virtual 3d model.
 
 ## Objetives
