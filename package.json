@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Modelo virtual del Sistema Solar",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SEscobedo/AstraSolaris"
+  },
   "scripts": {
   },
   "keywords": [
