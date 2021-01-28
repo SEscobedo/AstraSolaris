@@ -1,7 +1,8 @@
 # AstraSolaris
 ![Node.js CI](https://github.com/SEscobedo/AstraSolaris/workflows/Node.js%20CI/badge.svg)
+![GitHub](https://img.shields.io/github/license/SEscobedo/AstraSolaris)
 
-Solar system virtual 3d model.
+_Solar system virtual 3d model._
 
 ## Objetives
 This project attempts to create a scientifically accurate model of the solar system that is as complete as possible.
