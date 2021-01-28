@@ -4,7 +4,6 @@
   "description": "Modelo virtual del Sistema Solar",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Salvador D. Escobedo",
   "license": "MIT",
