@@ -2,6 +2,7 @@
 import * as THREE from './../node_modules/three/build/three.module.js';
 import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
 import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import * as PA from 'phyastra';
 
 
 const GRADTORAD = Math.PI/180;
@@ -13,6 +14,7 @@ const origin = new THREE.Vector3(0,0,0);
 
  var tm = new Date();
  var JulianDateIndex;
+
 
  const root = "https://raw.githubusercontent.com/SEscobedo/AstraSolaris/master/ephemeris"
 

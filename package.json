@@ -28,6 +28,7 @@
   "homepage": "https://www.astrasolaris.org/",
   "dependencies": {
     "camera-controls": "^1.25.3",
+    "phyastra": "^1.0.2",
     "three": "^0.124.0",
     "xterm": "^4.9.0"
   },
