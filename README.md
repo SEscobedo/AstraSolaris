@@ -1,6 +1,7 @@
 # AstraSolaris
 ![Node.js CI](https://github.com/SEscobedo/AstraSolaris/workflows/Node.js%20CI/badge.svg)
 ![GitHub](https://img.shields.io/github/license/SEscobedo/AstraSolaris)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/fb766ed0-27e1-4c4e-82bf-a0fd455113a6/deploy-status)](https://app.netlify.com/sites/astrasolaris/deploys)
 
 _Solar system virtual 3d model._
 
