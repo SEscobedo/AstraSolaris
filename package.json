@@ -8,6 +8,7 @@
     "url": "https://github.com/SEscobedo/AstraSolaris"
   },
   "scripts": {
+    "start": "npx nodemon server.js"
   },
   "keywords": [
     "three.js",
@@ -29,5 +30,8 @@
     "camera-controls": "^1.25.3",
     "three": "^0.124.0",
     "xterm": "^4.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
