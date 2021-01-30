@@ -29,5 +29,13 @@ The js folder contains the source code of the functions used for specific purpos
 The on-line access to the main model can be found at www.astrasolaris.org/solarsystem
 For more information you can visit www.astrasolaris.org
 
+# Command reference
+
+###  Camera movements
+Command | Description | Example
+---------------- | --------------------- | ---------------
+`goto <object>` | Moves the camera smoothly from actual position to a near position to the object | `goto Earth` takes the observer to the Earth, pointing the camera to it.
+
+
 
 
