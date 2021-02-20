@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-P619GVCNJ6"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-P619GVCNJ6');
+        </script>
+
+        <!--FACEBOOK-->
+        <meta property="og:image" content="./../img_as/orbital_elements.jpg">
+        <meta property="og:image:type" content="image/jpg">
+        <meta property="og:image:width" content="1052">
+        <meta property="og:image:height" content="806">
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.astrasolaris.org/galery/orbital_elements.html"/>
+        <meta property="og:title" content="Elementos orbitales" />
+        <meta property="og:description" content="Modelo de interactivo. Visualización 3d de los elementos que describien una órbita elíptica." />
+
+		<title>AstraSolaris - Orbital elements</title>
+        <meta charset="utf-8">
+        <meta name="author" content="Salvador Escobedo">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="../../css/main.css">
+        <script src="../../build/orbital_elements.js"></script>
+	</head>
+	<body>
+        <div id="info">
+			<h3><a href="https://spaceflight.nasa.gov/realdata/elements/index.html" target="_blank" rel="noopener">Elementos orbitales</a></h3>
+            Animación y modelo para <a href="http://www.astrasolaris.org" target="_blank" rel="noopener">AstraSolaris</a>.<br/>
+            Proyecto en construcción. <a href="https://github.com/SEscobedo/AstraSolaris/tree/master/galery/orbital_elements.html" target="_blank" rel="noopener">Ver Código fuente</a>.<br/>
+		</div>
+
+		<script>
+		const app = new ORB_ELEM.App();
+		app.init();
+	    </script>
+	</body>
+</html>

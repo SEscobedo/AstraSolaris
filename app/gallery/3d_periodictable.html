@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-P619GVCNJ6"></script>
+		<script>
+  		window.dataLayer = window.dataLayer || [];
+ 		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+
+  		gtag('config', 'G-P619GVCNJ6');
+		</script>
+
+		 <!--FACEBOOK-->
+		 <meta property="og:image" content="./../img_as/Periodic_table.jpg">
+		 <meta property="og:image:type" content="image/jpg">
+		 <meta property="og:image:width" content="800">
+		 <meta property="og:image:height" content="635">
+		 <meta property="og:type" content="website" />
+		 <meta property="og:url" content="https://www.astrasolaris.org/galery/3d_periodictable.html"/>
+		 <meta property="og:title" content="Astra Solaris Periodic table" />
+		 <meta property="og:description" content="Proyecto de animación de etiquetas." />
+
+		<title>AstraSolaris - Periodic table</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="../../css/main.css">
+		<script src="../../build/3d_periodictable.js"></script>
+		<style>
+			a {
+				color: #8ff;
+			}
+
+			#menu {
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				text-align: center;
+			}
+
+			.element {
+				width: 120px;
+				height: 160px;
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				font-family: Helvetica, sans-serif;
+				text-align: center;
+				line-height: normal;
+				cursor: default;
+			}
+
+			
+			.element:hover {
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+				border: 1px solid rgba(127,255,255,0.75);
+			}
+
+				.element .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 25px;
+					color: rgba(127,255,255,0.75);
+				}
+
+				.element .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(0,255,255,0.95);
+				}
+
+				.element .details {
+					position: absolute;
+					bottom: 15px;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+
+			.elementhyp {
+				width: 120px;
+				height: 160px;
+				box-shadow: 0px 0px 12px rgba(189, 245, 245, 0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				font-family: Helvetica, sans-serif;
+				text-align: center;
+				line-height: normal;
+				cursor: default;
+			}
+
+			.elementhyp:hover {
+				box-shadow: 0px 0px 12px rgba(163, 250, 250, 0.75);
+				border: 1px solid rgba(127,255,255,0.75);
+			}
+
+			.elementhyp .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 25px;
+					color: rgba(184, 255, 255, 0.472);
+				}
+
+				.elementhyp .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(187, 255, 255, 0.95);
+				}
+
+				.elementhyp .details {
+					position: absolute;
+					bottom: 15px;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(206, 255, 255, 0.75);
+				}
+
+
+			button {
+				color: rgba(127,255,255,0.75);
+				background: transparent;
+				outline: 1px solid rgba(127,255,255,0.75);
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,0.75);
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="info">
+			<h3><a href="https://en.wikipedia.org/wiki/Periodic_table" target="_blank" rel="noopener">Tabla periódica</a></h3>
+			Animación por <a href="http://www.astrasolaris.org" target="_blank" rel="noopener">AstraSolaris.</a>
+			Basado en el código de <a href="https://github.com/mrdoob/three.js/blob/master/examples/css3d_periodictable.html" target="_blank" rel="noopener">Michael Herzog</a><br>
+			proyecto en construcción.
+			<a href="https://github.com/SEscobedo/AstraSolaris/tree/master/galery/3d_periodictable.html" target="_blank" rel="noopener">Ver Código fuente</a><br/>
+			
+		</div>
+		<div id="container"></div>
+		<div id="menu">
+			<button id="table">TABLE</button>
+			<button id="ltable">LONG TABLE</button>
+			<button id="block">BlOCK</button>
+		</div>
+
+		<script>
+			const app = new PERIOD.App();
+			app.init();
+	    </script>
+
+	</body>
+</html>

@@ -1,8 +1,7 @@
 //import { XRHitTestTrackableType } from 'three';
-import * as THREE from './../node_modules/three/build/three.module.js';
-import { Lensflare, LensflareElement } from './../node_modules/three/examples/jsm/objects/Lensflare.js';
-import { GLTFLoader } from './../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import * as PA from 'phyastra';
+import * as THREE from 'three';
+import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 
 const GRADTORAD = Math.PI/180;
@@ -47,12 +46,79 @@ const origin = new THREE.Vector3(0,0,0);
 
  load_papa_parse();
 
+
+
+export function AddStars(UA, scene){
+
+
+    // stars
+    const radius = 30*UA;
+    var i, r = radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
+    
+    var vertices1 = [];
+    var vertices2 = [];
+    
+    var vertex = new THREE.Vector3();
+    
+    for ( i = 0; i < 250; i ++ ) {
+    
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random() * 2 - 1;
+        vertex.multiplyScalar( r );
+    
+        vertices1.push( vertex.x, vertex.y, vertex.z );
+    
+    }
+    
+    for ( i = 0; i < 1500; i ++ ) {
+    
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random() * 2 - 1;
+        vertex.multiplyScalar( r );
+    
+        vertices2.push( vertex.x, vertex.y, vertex.z );
+    
+    }
+    
+    starsGeometry[ 0 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
+    starsGeometry[ 1 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
+    
+    var stars;
+    var starsMaterials = [
+        new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
+    ];
+    
+    for ( i = 10; i < 30; i ++ ) {
+    
+        stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
+    
+        stars.rotation.x = Math.random() * 6;
+        stars.rotation.y = Math.random() * 6;
+        stars.rotation.z = Math.random() * 6;
+        stars.scale.setScalar( i * 10 );
+    
+        stars.matrixAutoUpdate = false;
+        stars.updateMatrix();
+    
+        scene.add( stars );
+    
+    }
+
+}
+
  export function CreateSun(EarthScale,scene){
 
     const geometrySun = new THREE.SphereBufferGeometry( 109.076 * EarthScale, 100, 100 );
     const geometryCrown = new THREE.PlaneBufferGeometry( 180 * 109.076 * EarthScale, 180 * 109.076 * EarthScale );
     //const textureSun = new THREE.TextureLoader().load('textures/heliographic_negative_bw2.jpg');
-    const textureCrown = new THREE.TextureLoader().load('./../textures/lensflare/star_flare.png');
+    const textureCrown = new THREE.TextureLoader().load('./../app/textures/lensflare/star_flare.png');
     //const materialSun = new THREE.MeshStandardMaterial({emissiveMap : textureSun,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialSun = new THREE.MeshStandardMaterial({color:0xFFFFFF,emissive: 0xFFFFFF,emissiveIntensity:1});
     const materialCrown = new THREE.MeshStandardMaterial({emissiveMap : textureCrown, alphaMap:textureCrown, emissive: 0xFFFFFF,emissiveIntensity:1,transparent:true,opacity:1});
@@ -80,7 +146,7 @@ const origin = new THREE.Vector3(0,0,0);
      const textureLoader = new THREE.TextureLoader();
 
      //const textureFlare0 = textureLoader.load( 'textures/lensflare/lensflare0.png' );
-     const textureFlare3 = textureLoader.load( './../textures/lensflare/lensflare3.png' );
+     const textureFlare3 = textureLoader.load( './../app/textures/lensflare/lensflare3.png' );
 
 
      const lensflare = new Lensflare();
@@ -398,70 +464,6 @@ export function CreateOrbits(UA,scene){
 
 }
 
-export function AddStars(UA, scene){
-    
-    
-    // stars
-    const radius = 30*UA;
-    var i, r = radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
-    
-    var vertices1 = [];
-    var vertices2 = [];
-    
-    var vertex = new THREE.Vector3();
-    
-    for ( i = 0; i < 250; i ++ ) {
-    
-        vertex.x = Math.random() * 2 - 1;
-        vertex.y = Math.random() * 2 - 1;
-        vertex.z = Math.random() * 2 - 1;
-        vertex.multiplyScalar( r );
-    
-        vertices1.push( vertex.x, vertex.y, vertex.z );
-    
-    }
-    
-    for ( i = 0; i < 1500; i ++ ) {
-    
-        vertex.x = Math.random() * 2 - 1;
-        vertex.y = Math.random() * 2 - 1;
-        vertex.z = Math.random() * 2 - 1;
-        vertex.multiplyScalar( r );
-    
-        vertices2.push( vertex.x, vertex.y, vertex.z );
-    
-    }
-    
-    starsGeometry[ 0 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
-    starsGeometry[ 1 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
-    
-    var stars;
-    var starsMaterials = [
-        new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
-        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
-    ];
-    
-    for ( i = 10; i < 30; i ++ ) {
-    
-        stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
-    
-        stars.rotation.x = Math.random() * 6;
-        stars.rotation.y = Math.random() * 6;
-        stars.rotation.z = Math.random() * 6;
-        stars.scale.setScalar( i * 10 );
-    
-        stars.matrixAutoUpdate = false;
-        stars.updateMatrix();
-    
-        scene.add( stars );
-    
-    }
-
-}
 
 export function SkyReference(radius, scene, center = new THREE.Vector3(0,0,0)){
     var i;

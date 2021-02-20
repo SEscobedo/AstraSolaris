@@ -25,25 +25,39 @@
     <meta property="og:description" content="Modelo de código abierto del sistema solar." />
 
     <title>Astra Solaris - Solar system model</title>
-    <link type="text/css" rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="./node_modules/xterm/css/xterm.css" />
-    <script src="./node_modules/xterm/lib/xterm.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/main.css">
+	<link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"/>
+    <!--<script src="../node_modules/xterm/lib/xterm.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"></script> 
+	<script src="../build/astra.js"></script>
+
+  <style>
+  button {
+    color: rgba(127,255,255,0.75);
+    background: transparent;
+    outline: 1px solid rgba(127,255,255,0.75);
+    border: 0px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: rgba(0,255,255,0.5);
+  }
+
+  button:active {
+    color: #000000;
+    background-color: rgba(0,255,255,0.75);
+  }
+</style>
 
 </head>
 
 <body>
-
-  
-  <script type ="module" src="js/astra.js"></script>
-  
-
 <div id="control_panel" >
   <div id="info">
     <br/>
     <a href="index.html" target="_blank" rel="noopener">Astra Solaris BETA</a> - Sistema Solar [Escala real]<br/>
-
-  
     <button id="Sol">Sol</button>
     <button id="Mercurio">Mercurio</button>
     <button id="Venus">Venus</button>
@@ -64,16 +78,17 @@
   
 </div>
 
-<script type="module">
-  import {CommandExecute} from './js/astra.js';
-  var term = new Terminal({
+<script>
+	const app = new ASTRA.App();
+	app.init();
+
+	var term = new Terminal({
     cursorBlink: "block",
     rows: 8, 
     cols: 45
   });
 
-
-  const ws = new WebSocket("ws://localhost:3000", "echo-protocol");
+   const ws = new WebSocket("ws://localhost:3000", "echo-protocol");
   var curr_line = "";
   var entries = [];
   term.open( document.getElementById('disp'));
@@ -105,7 +120,7 @@
 
       //creo que aquí es lo bueno*******************************
 
-      term.write(CommandExecute(curr_line));
+      term.write(app.CommandExecute(curr_line));
 				  curr_line = "";
 				  term.write("\r\n*> ");
 	  
@@ -133,8 +148,7 @@
     term.write(data);
   });
 
- 
-  </script>
+</script>
 
 </body>
 </html>

@@ -1,14 +1,20 @@
 {
   "name": "astrasolaris",
   "version": "1.0.0",
-  "description": "Modelo virtual del Sistema Solar",
+  "description": "",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/SEscobedo/AstraSolaris"
   },
   "scripts": {
-    "start": "npx nodemon server.js"
+    "build": "rollup -c \"rollup_config.js\"",
+    "start": "serve"
+  },
+  "author": "Salvador D. Escobedo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SEscobedo/AstraSolaris/issues"
   },
   "keywords": [
     "three.js",
@@ -20,19 +26,16 @@
     "astronautics",
     "astrodynamics"
   ],
-  "author": "Salvador D. Escobedo",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/SEscobedo/AstraSolaris/issues"
-  },
   "homepage": "https://www.astrasolaris.org/",
   "dependencies": {
-    "camera-controls": "^1.25.3",
-    "phyastra": "^1.0.2",
-    "three": "^0.124.0",
-    "xterm": "^4.9.0"
+    "camera-controls": "^1.26.0",
+    "three": "^0.125.2",
+    "xterm": "^4.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "rollup": "^2.3.2",
+    "rollup-plugin-terser": "^5.3.0",
+    "serve": "^11.3.2"
   }
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-P619GVCNJ6"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-P619GVCNJ6');
+		</script>
+
+		 <!--FACEBOOK-->
+		 <meta property="og:image" content="./../img_as/Planets_size_compare.jpg">
+		 <meta property="og:image:type" content="image/jpg">
+		 <meta property="og:image:width" content="1360">
+		 <meta property="og:image:height" content="646">
+		 <meta property="og:type" content="website" />
+		 <meta property="og:url" content="https://www.astrasolaris.org/galery/planet_size_comp.html"/>
+		 <meta property="og:title" content="Comparación del tamaño de los planetas" />
+		 <meta property="og:description" content="Proyecto de modelado para Astra Solaris." />
+
+		<title>AstraSolaris - Planet sizes</title>
+		<meta charset="utf-8">
+		<meta name="author" content="Salvador Escobedo">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="../../css/main.css">
+		<script src="../../build/planet_size_comp.js"></script>
+	</head>
+	<body>
+		<div id="info">
+			<h3><a href="https://es.wikipedia.org/wiki/Sistema_solar" target="_blank" rel="noopener">Comparación de los planentas</a></h3>
+			Animación por <a href="http://www.astrasolaris.org" target="_blank" rel="noopener">AstraSolaris</a>.
+			<a href="https://github.com/SEscobedo/AstraSolaris/tree/master/galery/planets_size_comp.html" target="_blank" rel="noopener">Ver Código fuente</a><br/>
+			Los planetas se presentan en su tamaño real.<br/>
+			las distancias entre ellos se han acortado intencionalmente.
+		</div>
+
+		<script>
+			const app = new PLANETSIZE.App();
+			app.init();
+	    </script>
+
+	</body>
+</html>
