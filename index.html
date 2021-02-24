@@ -1,147 +1,136 @@
-<!DOCTYPE html>
-<html lang="es">
-
+<!doctype html>
+<html>
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P619GVCNJ6"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Astra Solaris</title>
+	<link rel="shortcut icon" href="favicon.ico">  
+	<link rel="stylesheet" href="site/css/style.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="site/css/mobile.css">
 
-    gtag('config', 'G-P619GVCNJ6');
-    </script>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Astra Solaris</title>
-     <meta name="description" content="Astra Solaris tiene como objetivo recrear de manera virtual y con precisión científica el sistema solar, en todos aquellos objetos que poseen interés atronómico o astronáutico.">
-     <meta name="robots" content="all">
-     <meta name="author" content="Salvador D. Escobedo">
-     <meta name="keywords" content="Astronomía, sistema solar, ciencia planetaria, IAM">
-
-    <!--FACEBOOK-->
-    <meta property="og:image" content="img_as/AstraSolarisPost.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="940">
-    <meta property="og:image:height" content="788">
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.astrasolaris.org/"/>
-    <meta property="og:title" content="Astra Solaris" />
-    <meta property="og:description" content="Modelo de código abierto del sistema solar." />
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@">
-    <meta name="twitter:title" content="">
-    <meta name="twitter:creator" content="@">
-    <meta name="twitter:description" content="Modelo de código abierto del sistema solar.">
-
-     
-    <link rel="shortcut icon" href="img_as/logo_as.png" type="image/x-icon">
-    <link rel="stylesheet" href="/../css/estilos_as.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800&display=swap" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Taviraj:ital,wght@0,600;1,300&display=swap" rel="stylesheet">
-    
+	<script src="site/js/mobile.js" type="text/javascript"></script>
+	<script src="site/js/nasaAPI.js" type="text/javascript"></script>
 </head>
-
 <body>
-    <!-- facebook -->                                   
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v9.0" nonce="XFdWe8Dv">
-    </script>
-
-   
-
-    <header>
-            <div class="textos-header">
-                <div style="width: 20%;"></div>
-                <div style="width: 60%; padding-bottom: 100px;">
-                    <h1>Astra Solaris</h1>
-                    <h2><i>El modelo virtual del sistema solar</i></h2>
-                </div>
-                <div style="width: 20%;"><img src="/img_as/iam.png" alt="" class = "lateral-icons"></div>
-            </div>
-            <div class="fb-share-button" data-href="https://www.astrasolaris.org/" data-layout="button_count" data-size="large">
-                <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.astrasolaris.org%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a>
-            </div>
-        
-    </header>
-
-    <div class = 'galeria-port' style="padding-bottom: 100px; padding-top: 50px;" >
-        <h2><a href="/app/solarsystem.html" target="_blank">abrir Astra Solaris</a></h2>
-
-        <h2><a href="index_gallery.html" target="_self">ver Galeria de Modelos 3D</a></h2>
-    </div>
-
-    <main>
-       
-        <section style="padding-bottom: 30px;">
-            <div class = 'contenedor-sobre-nosotros' style="padding-left: 30px;padding-right: 30px;" >
-                <img src="/img_as/logo_iam_rojo_solido.jpg" alt="" style = 'height: 200px'>
-                <div>
-                    <h2>El proyecto Astra Solaris</h2> <p>Tiene como objetivo recrear de manera virtual y con precisión científica el sistema solar, en todos aquellos objetos que poseen interés atronómico o astronáutico.
-                    </p>
-                    <p style="padding-bottom: 10px;"> Los datos usados en este modelo son administrados por una colaboración científica liderada por el Instituto de Astronomía y Meteorología de la Universidad de Guadalajara. Estos datos y el código fuete se encuentran accesibles en el siguente vínculo:
-                    </p>            
-                    <a href="https://github.com/SEscobedo/AstraSolaris" target="_blank">ver repositorio en GitHub</a>
-                    <p style="padding-top: 10px;">
-                        Astra Solaris es un proyecto de <i>código abierto</i>; Los datos y el código pueden usarse bajo licencia MIT, y están disponibles al uso y contribuciones de la comunidad.
-                    </p>
-                    <p>
-                        Astra Solaris también utiliza datos públicos de terceros, mediante vínculos apropiados y con sus respectivas referencias.
-                    </p>
-
-                    <p> La programación de los gráficos y las aplicaciones internas del modelo fueron desarrollados por <i>Macrocosmos Software</i> y las funciones relevantes para cálculos o procesamiento centífico de datos están disponibles en el mismo repositorio.
-                    </p>
-                    <p>Visita nuestra página de <a href="https://www.facebook.com/AstraSolaris3d" target="_blank">facebook</a> </p>
-                    <h2>¿Para qué sirve Astra Solaris?</h2>
-
-                    <p>Además de ofrecer al público en general una experiencia inmersiva en las vastas regiones del espacio interplanetario, Astra Solaris posee funciones específicas dirigidas a diferentes tipos de usuarios.
-                    </p>
-
-                    <h3>Divulgación y educación</h3>
-                     <p class=""> Enseña astronomía a tus alumnos mediante los viajes virtuales de Astra Solaris. Los recorridos te llevarán a concer diferentes lugares de nuestro universo, con explicaciones adaptadas al nivel de la audiencia. Crea tus propios viajes en Astra Solaris y compártelos con tus amigos en redes sociales. </p>
-
-                     <h3>Ingeniería aeroespacial</h3>                 
-                    <p>
-                        Debido a las posibilidades que ofrece la terminal y el repositorio, es posible simular el comportamiento de naves espaciales y otros artefactos con precisión personalizada. Simular un lanzamiento y visualizar su trayectoria.
-                    </p>
-
-                    <h3>Física y ciencias del espacio</h3>
-                    <p> Astra Solaris es capaz de graficar órbitas y planos en el espacio mediante una terminal disponible a los usuarios. El sistema está diseñado para recibir instrucciones en diferentes lenguajes de programación, siendo así capaz de funcionar como herramienta de visualización para la investigación científica. En virtud de su filosofía de código abierto, las posibilidades de uso son prácticamente ilimitadas. 
-                        (Nota: muchas de las funcionalidades de Astra Solaris están siendo aún inmplementadas. Véase el repositorio y la referencia de comandos para saber el estado actual del software.)                       
-                    </p>
-                    
-                </div>
-            </div>
-        </section>
-        
-    
-        <section class="portafolio">
-            <div class="contenedor">
-                <h2 class="titulo"></h2>
-                <div class="galeria-port">
-                    <div class="imagen-port">
-                        <img src="/img_as/Astra_Solaris-Beta-Jupiter.png" alt="">
-                    </div>                    
-                    
-                    <div class="imagen-port">
-                        <img src="/img_as/Astra_Solaris_Beta--Luna.png" alt="">
-                    </div>
-
-                    <div class="imagen-port">
-                        <img src="/img_as/Astra_Solaris_Beta-Saturno.png" alt="">
-                    </div> 
-                </div>
-            </div>
-           
-        </section>
-
-    </main>
-    <footer>
-        <h3 class="titulo-final">Powered by macrocosmos | 2021</h3>
-    </footer>
+	<div id="page">
+		<div id="header">
+			<div>
+				<a href="index.html" class="logo"><img src="site/images/logo.png" alt=""></a>
+				<ul id="navigation">
+					<li class="selected">
+						<a href="index.html">Home</a>
+					</li>
+					<li>
+						<a href="site/about.html">About</a>
+					</li>
+					<li class="menu">
+						<a href="site/projects.html">Projects</a>
+					</li>
+					<li class="menu">
+						<a href="site/blog.html">Blog</a>
+					</li>
+					<li>
+						<a href="site/contact.html">Contact</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="body" class="home">
+			<div class="header">
+				<div>
+					<img src="site/images/jupiter.png" alt="" class="satellite">
+					<h1>ASTRA SOLARIS</h1>
+					<h2>Open Source 3d modeling</h2>
+					<a href="../app/solarsystem.html" class="more">Launch</a>
+					<h3>FEATURED PROJECTS</h3>
+					<ul>
+						<li>
+							<a href="site/projects.html"><img src="site/images/project-image1.jpg" alt=""></a>
+						</li>
+						<li>
+							<a href="site/projects.html#SolarSystem"><img src="site/images/solarsystemsmall.jpg" alt=""></a>
+						</li>
+						<li>
+							<a href="site/projects.html#OrbitalElements"><img src="site/images/project-image5.jpg" alt=""></a>
+						</li>
+						<li>
+							<a href="site/projects.html"><img src="site/images/project-image4.jpg" alt=""></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="body">
+				<div>
+					<h1>OUR MISSION</h1>
+					<p>Develop 3d models and software for the use of astronomy and astronautics, with applications in science, engineering and education, open for free and universal access.</p>
+				</div>
+			</div>
+			<div class="footer">
+				<div>
+					<ul>
+						<li>
+							<h1>PICTURE OF THE DAY</h1>
+							<a href="site/blog.html" id="linkOfday"><img style="width: 100%; height: 100%;" id="pictureOfday" src="site/images/mars-rover.jpg" alt=""><span></span></a>
+						</li>
+						<li>
+							<h1>LATEST BLOG</h1>
+							<ul>
+								<li>
+									<a href="site/blog.html"><img src="site/images/finding-planet.jpg" alt=""></a>
+									<h1>ASTRA IN IAC 2021</h1>
+									<span>FEBRUARY 6, 2021</span>
+									<a href="site/blog.html" class="more">Read More</a>
+								</li>
+								<li>
+									<a href="site/blog.html"><img src="site/images/new-satellitedish.jpg" alt=""></a>
+									<h1>NEW PROJECT FOR ASRONOMY</h1>
+									<span>FEBRUARY 3, 2021</span>
+									<a href="site/blog.html" class="more">Read More</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+			<div class="connect">
+				<div>
+					<h1>FOLLOW OUR MISSIONS ON</h1>
+					<div>
+						<a href="https://www.facebook.com/AstraSolaris3d" class="facebook">facebook</a>
+						<a href="https://github.com/SEscobedo/AstraSolaris" class="github">GitHub</a>
+						<!--<a href="http://freewebsitetemplates.com/go/twitter/" class="twitter">twitter</a>-->
+						<!--<a href="http://freewebsitetemplates.com/go/googleplus/" class="googleplus">googleplus</a>-->
+						
+					</div>
+				</div>
+			</div>
+			<div class="footnote">
+				<div>
+					<p>&copy; 2021 BY ASTRASOLARIS | ALL RIGHTS RESERVED</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
+
+<script>
+var urlnasa = 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY'
+
+getJSON(urlnasa,
+function(err, data) {
+  if (err !== null) {
+    alert('Something went wrong: ' + err);
+  } else {
+	if (data.type = "video"){
+		document.getElementById("linkOfday").href = data.url
+	}else{
+		document.getElementById("pictureOfday").src = data.url
+	}
+    
+  }
+});
+</script>
 
 </html>
