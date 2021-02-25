@@ -10,7 +10,7 @@
 /* ======= Base ======= */
 body {
   font-family: 'Open Sans', arial, sans-serif;
-  color: #494d55;
+  color: #3e485a;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -247,7 +247,7 @@ select {
 
 /* ====== Header ====== */
 .header {
-  background: #494d55;
+  background: #3e485a;
   color: rgba(255, 255, 255, 0.85);
   border-top: 5px solid #40babd;
   padding: 30px 0;
@@ -1211,7 +1211,8 @@ select {
 
 /* ======= Landing Page ======= */
 .landing-page .header {
-  background: #494d55;
+  background: #3e485a;
+  /*background-image: url("/site/images/bg-home.jpg");*/
   color: rgba(255, 255, 255, 0.85);
   padding: 60px 0;
 }
