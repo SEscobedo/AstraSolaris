@@ -3,9 +3,14 @@
 ![GitHub](https://img.shields.io/github/license/SEscobedo/AstraSolaris)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/fb766ed0-27e1-4c4e-82bf-a0fd455113a6/deploy-status)](https://app.netlify.com/sites/astrasolaris/deploys)
 
-_Solar system virtual 3d model._
+_Open Source 3d modeling._
 
 ## Objetives
+Astra Solaris is a set of software projects dedicated to astronomy and astronautics. All Astra Solaris projects are open source under MIT licence. The Institute of Astronomy and Meteorology of the University of Guadalajara is official partner and main scientific collaborator. You can contact us for participating in the development. Collaboration is NOT restricted to scientists and programmers.
+
+View [code of conduct](.github/CODE_OF_CONDUCT.md)
+
+## Main model: Astra Solar System
 This project attempts to create a scientifically accurate model of the solar system that is as complete as possible.
 The model contains a representation of the following lists of objects:
 
@@ -29,12 +34,6 @@ The js folder contains the source code of the functions used for specific purpos
 The on-line access to the main model can be found at www.astrasolaris.org/solarsystem
 For more information you can visit www.astrasolaris.org
 
-# Command reference
-
-###  Camera movements
-Command | Description | Example
----------------- | --------------------- | ---------------
-`goto <object>` | Moves the camera smoothly from actual position to a near position to the object | `goto Earth` takes the observer to the Earth, pointing the camera to it.
 
 
 
