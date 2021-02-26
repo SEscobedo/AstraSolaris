@@ -1,8 +1,41 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	 <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P619GVCNJ6"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-P619GVCNJ6');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Astra Solaris</title>
+     <meta name="description" content="Astra Solaris tiene como objetivo recrear de manera virtual y con precisión científica el sistema solar, en todos aquellos objetos que poseen interés atronómico o astronáutico.">
+     <meta name="robots" content="all">
+     <meta name="author" content="Salvador D. Escobedo">
+     <meta name="keywords" content="Astronomy, solar system, planetary science, IAM">
+
+    <!--FACEBOOK-->
+    <meta property="og:image" content="img_as/AstraSolarisPost.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="940">
+    <meta property="og:image:height" content="788">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.astrasolaris.org/"/>
+    <meta property="og:title" content="Astra Solaris" />
+    <meta property="og:description" content="Open Source 3d modeling for astronomy and astronautics." />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@">
+    <meta name="twitter:title" content="">
+    <meta name="twitter:creator" content="@">
+    <meta name="twitter:description" content="Modelo de código abierto del sistema solar.">
+	
 	<title>Astra Solaris</title>
 	<link rel="shortcut icon" href="favicon.ico">  
 	<link rel="stylesheet" href="site/css/style.css" type="text/css">
@@ -12,6 +45,10 @@
 	<script src="site/js/nasaAPI.js" type="text/javascript"></script>
 </head>
 <body>
+<!--FACEBOOK LIKE BUTTON JAVASCRIPT SDK-->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v9.0" nonce="t7HQ5MT7"></script>
+
 	<div id="page">
 		<div id="header">
 			<div>
@@ -39,6 +76,7 @@
 					<h1>ASTRA SOLARIS</h1>
 					<h2>Open Source 3d modeling</h2>
 					<a href="../app/solarsystem.html" class="more" target="_blanck">Launch</a>
+	
 					<h3>FEATURED PROJECTS</h3>
 					<ul>
 						<li>
@@ -67,10 +105,10 @@
 					<ul>
 						<li>
 							<h1>PICTURE OF THE DAY</h1>
-							<a href="site/blog.html" id="linkOfday"><img style="width: 100%; height: 100%;" id="pictureOfday" src="site/images/mars-rover.jpg" alt=""><span></span></a>
+							<a href="#" id="linkOfday"><img style="width: 100%; height: 100%;" id="pictureOfday" src="site/images/mars-rover.jpg" alt=""><span></span></a>
 						</li>
 						<li>
-							<h1>COMMING SOON</h1>
+							<h1>COMING SOON</h1>
 							<ul>
 								<li>
 									<a href="#"><img src="site/images/finding-planet.jpg" alt=""></a>
@@ -94,6 +132,7 @@
 			<div class="connect">
 				<div>
 					<h1>FOLLOW OUR MISSIONS ON</h1>
+        
 					<div>
 						<a href="https://www.facebook.com/AstraSolaris3d" class="facebook">facebook</a>
 						<a href="https://github.com/SEscobedo/AstraSolaris" class="github">GitHub</a>
@@ -105,7 +144,7 @@
 			</div>
 			<div class="footnote">
 				<div>
-					<p>&copy; 2021 BY ASTRASOLARIS | ALL RIGHTS RESERVED</p>
+					<p>&copy; 2021 BY ASTRASOLARIS</p>
 				</div>
 			</div>
 		</div>
@@ -113,7 +152,7 @@
 </body>
 
 <script>
-var urlnasa = 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY'
+var urlnasa = 'https://api.nasa.gov/planetary/apod?api_key=' + (process.env.NASA_KEY || 'DEMO_KEY')
 
 getJSON(urlnasa,
 function(err, data) {
