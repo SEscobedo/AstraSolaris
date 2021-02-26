@@ -31,7 +31,7 @@ This repository contains two files for each of the categories shown, one with th
 
 The js folder contains the source code of the functions used for specific purposes (simulation of physical effects, interpretation of special instructions, generation of reference geometry, etc.). More specific information about these functions will be found in wiki documents.
 
-The on-line access to the main model can be found at www.astrasolaris.org/solarsystem
+The on-line access to the main model can be found at www.astrasolaris.org/app/solarsystem
 For more information you can visit www.astrasolaris.org
 
 
