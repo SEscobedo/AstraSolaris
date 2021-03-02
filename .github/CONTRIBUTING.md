@@ -10,28 +10,28 @@ It is assumed that you know a little about node.js, git and threejs. If not, [he
 * Change into the directory you’d like
 * Clone your forked repo
 
-      `git clone https://github.com/[yourgithubname]/AstraSolaris.git`
+      git clone https://github.com/[yourgithubname]/AstraSolaris.git
 
 * Go into the AstraSolaris directory.
         
-      `cd ./AstraSolaris`
+      cd ./AstraSolaris
 
 * Install the dependencies
 
-      `npm install`
+      npm install
 
 ## Next Steps
 
 As per the npm standard, ‘start’ is the place to begin the package.
 
-    `npm start`
+    npm start
 
 This script will start a local server similar to [astrasolaris.org](https://www.astrasolaris.org/), but instead will be hosted on your local machine. Browse to http://localhost:5000/ to check it out.
 
 
 If you’d like to make a minified version of the build files i.e. ‘build/astra.js’ run:
         
-    `npm run build`
+    npm run build
 
 Build files are generated from src directory.
 
@@ -41,14 +41,14 @@ When you’ve decided to make changes, start with the following:
 
 * Update your local repo
         
-      `git pull https://github.com/SEscobedo/AstraSolaris.git`
-      `git push`
+      git pull https://github.com/SEscobedo/AstraSolaris.git
+      git push
 
 * Make a new branch from the dev branch
         
-      `git checkout dev`
-      `git branch [mychangesbranch]`
-      `git checkout [mychangesbranch]`
+      git checkout dev
+      git branch [mychangesbranch]
+      git checkout [mychangesbranch]
 
 * Add your changes to your commit.
 * Push the changes to your forked repo.
