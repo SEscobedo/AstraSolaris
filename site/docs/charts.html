@@ -56,11 +56,92 @@
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
                     <h1 class="doc-title"><span aria-hidden="true" class="icon icon_datareport_alt"></span> Collaboration</h1>
-                    <div class="meta"><i class="far fa-clock"></i> Last updated: Oct 12th, 2020</div>
+                    <div class="meta"><i class="far fa-clock"></i> Last updated: Mar 2nd, 2021</div>
                 </div><!--//doc-header-->
                 <div class="doc-body row">
                     <div class="doc-content col-md-9 col-12 order-1">
                         <div class="content-inner">
+                        <section id="Introduction" class="doc-section">
+                                <p><strong><i class="fas fa-external-link-square-alt"></i> Source:</strong> <a href="https://github.com/SEscobedo/AstraSolaris/blob/dev/.github/CONTRIBUTING.md" target="_blank">https://github.com/SEscobedo/AstraSolaris/blob/dev/.github/CONTRIBUTING.md</a></p>
+                                <h2 class="section-title">Introduction</h2>
+                                
+                                <div class="section-block" id="Requirements">
+                                    <h3 class="block-title">1. Requirements</h3>
+                                    <p>It is assumed that you know a little about node.js, git and threejs. If not, <a href="https://help.github.com/en/github/using-git">here's some help to get started with git</a> and <a href="https://nodejs.org/en/docs/guides/getting-started-guide/">here’s some help to get started with node.js</a>. For threejs you can visit <a href="https://threejs.org/">threejs.org</a>.</p>
+
+                                    <ul>
+                                    <li> Install <a href="https://nodejs.org/">Node.js</a></li>
+                                    <li> Install <a href="https://git-scm.com/">Git</a></li>
+                                    <li> <a href="https://help.github.com/en/github/getting-started-with-github/fork-a-repo">Fork</a> Astra Solaris </li>
+                                    <li> Open your OS’s terminal </li>
+                                    <li> Change into the directory you’d like </li>
+                                    <li> Clone your forked repo
+                                        <p><pre><code class="language-markup">$ git clone https://github.com/[yourgithubname]/AstraSolaris.git</code></pre></p>
+                                        
+                                    </li>
+
+                                    <li> Go into the AstraSolaris directory.
+                                        <p><pre><code class="language-markup">$ cd ./AstraSolaris</code></pre></p>
+                                        
+                                    </li>
+                                    <li> Install the dependencies
+                                        <p><pre><code class="language-markup">$ npm install</code></pre></p>
+                                    </li>
+                                    </ul>
+                                </div><!--//section-block-->
+                                 <div class="section-block" id="NextSteps">
+                                    <h3 class="block-title">2. Next Steps</h3>
+                                    <p>As per the npm standard, ‘start’ is the place to begin the package.</p>
+
+                                    <p><pre><code class="language-markup">$ npm start</code></pre></p>
+
+                                    <p>This script will start a local server similar to <a href="https://www.astrasolaris.org/">astrasolaris.org</a>, but instead will be hosted on your local machine. Browse to <a href="http://localhost:5000/">http://localhost:5000/</a> to check it out.</p>
+
+
+                                    <p>If you’d like to make a minified version of the build files i.e. <i>build/astra.js</i> run:</p>
+
+                                    <p><pre><code class="language-markup">$ npm run build</code></pre></p>
+    
+                                    <p>Build files are generated from src directory.</p>
+
+                                </div><!--//section-block-->
+                                <div class="section-block" id="MakingChanges">
+                                    <h3 class="block-title">3. Making Changes</h3>
+                                    <p>When you’ve decided to make changes, start with the following:</p>
+                                    <ul>
+                                    <li> Update your local repo
+                                        <p><pre><code class="language-markup">$ git pull https://github.com/SEscobedo/AstraSolaris.git
+$ git push</code></pre></p>
+
+                                    </li>
+                                    <li> Make a new branch from the dev branch
+                                        <p><pre><code class="language-markup">$ git checkout dev
+$ git branch [mychangesbranch]
+$ git checkout [mychangesbranch]</code></pre></p>
+                                    </li>
+                                    <li> Add your changes to your commit.</li>
+                                    <li> Push the changes to your forked repo.</li>
+                                    <li> Open a Pull Request (PR) </li>
+                                    <ul>                                    
+                                </div><!--//section-block-->
+                                 <div class="section-block" id="ImportantNotes">
+                                    <h3 class="block-title">4. Important Notes</h3>
+                                    <ul>
+                                    <li> Don't include any build files to your commit.</li>
+                                    <li> Making changes may require changes to the documentation. To update the docs in other languages, simply copy the English to begin with. Put tranlated site and documentation in a directory at site/[nameoflanguage].</li>
+                                    <li> it's good to also add an example and screenshot for it, for showing how it's used and for end-to-end testing.</li>
+                                    <li> If you add some assets for the examples (models, textures, sounds, etc), make sure they have a proper license allowing for their use here, less restrictive the better. It is unlikely for large assets to be accepted.</li>
+                                    <li> If some issue is relevant to patch / feature, please mention it with hash (e.g. #9) in a commit message to get cross-reference in GitHub.</li>
+                                    <li> The html file of all new projects using three.js will be located at app/gallery directory. javascript code for this projects will be stored in src directory.</li>
+                                    <li> Once done with a patch / feature do not add more commits to a feature branch </li>
+                                    <li> Create separate branches per patch or feature.</li>
+                                    <li> If you make a PR but it is not actually ready to be pulled into the dev branch then please <a href="https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft">convert it to a draft PR</a></li>
+                                    </ul>
+                                    <p>This project is currently contributed to mostly via everyone's spare time. Please keep that in mind as it may take some time for the appropriate feedback to get to you. If you are unsure about adding a new feature, it might be better to ask first to see whether other people think it's a good idea. You can do this at github discussions https://github.com/SEscobedo/AstraSolaris/discussions.</p>
+                                    
+                                </div><!--//section-block-->
+
+                            </section><!--//doc-section-->
 
                             
                         </div><!--//content-inner-->
@@ -68,10 +149,14 @@
                     <div class="doc-sidebar col-md-3 col-12 order-0 d-none d-md-flex">
                         <div id="doc-nav" class="doc-nav">
                             <nav id="doc-menu" class="nav doc-menu flex-column sticky">
-                                <a class="nav-link scrollto" href="#chartjs">Chart.js</a>
-                                <a class="nav-link scrollto" href="#flot">Flot Charts</a>
-                                <a class="nav-link scrollto" href="#morris">Morris.js</a>
-                                <a class="nav-link scrollto" href="#inline">Inline Charts</a>
+                                <a class="nav-link scrollto" href="#Introduction">Introduction</a>
+                                 <nav class="doc-sub-menu nav flex-column">
+                                        <a class="nav-link scrollto" href="#Requirements">Requirements</a>
+                                        <a class="nav-link scrollto" href="#NextSteps">Next Steps</a>
+                                        <a class="nav-link scrollto" href="#MakingChanges">Making Changes</a>
+                                        <a class="nav-link scrollto" href="#ImportantNotes">Important Notes</a>
+                                    </nav><!--//nav-->
+                               
                             </nav><!--//doc-menu-->
                         </div>
                     </div><!--//doc-sidebar-->
