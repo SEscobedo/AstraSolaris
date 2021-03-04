@@ -13,20 +13,20 @@ Astra Solaris is a set of software projects dedicated to astronomy and astronaut
 
 ## Visit website
 
-Know more of this project at www.astrasolaris.org
+Know more about this project at www.astrasolaris.org
 The on-line access to the main model can be found at www.astrasolaris.org/app/solarsystem
 For the list of active projects you can visit www.astrasolaris.org/site/projects
 
 ## Collaboration
-This project is mean to be open for different kinds of collaboration. You can contribute in the next items:
+This project is mean to be open to different kinds of collaboration. You can contribute in the next items:
 
 * Proposing ideas for new projects or improve the existing ones.
-* Scienific reviews and tests.
+* Scientific reviews and tests.
 * Making graphic material for projects and media (pictures, banners, etc.)
 * Using Astra Solaris projects and finding problems.
 * Sharing.
 
-For collaborate this way you can join to [discussions](https://github.com/SEscobedo/AstraSolaris/discussions). You can also contact us at www.astrasolaris.org/site/contact
+To collaborate this way you can join in the [discussions](https://github.com/SEscobedo/AstraSolaris/discussions). You can also contact us at www.astrasolaris.org/site/contact
 
 * Supporting Astra Soalaris. For supporting refer to the _Sponsor this project_ in this repo.
 
