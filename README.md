@@ -1,6 +1,6 @@
 # AstraSolaris
 
-![banner](./images_as/bg-readme.jpg?raw=true)
+![banner](./img_as/bg-readme.jpg?raw=true)
 
 ![Node.js CI](https://github.com/SEscobedo/AstraSolaris/workflows/Node.js%20CI/badge.svg)
 ![GitHub](https://img.shields.io/github/license/SEscobedo/AstraSolaris)
